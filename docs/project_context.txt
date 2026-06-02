@@ -5518,5 +5518,89 @@ Routing rules after relocation:
   current workspace.
 
 ================================================================================
+2026-06-02 GITHUB-READY PERSONAL RESEARCH REPOSITORY PACKAGE
+--------------------------------------------------------------------------------
+User direction:
+- The user asked for a GitHub-style repository folder for the Fed-DDQN personal
+  research project, with code, dataset, scripts, paper-related files, and a
+  README containing textual project results.
+
+Created local Git repository:
+- `P:\AI_FED-DDQN\github_repo\fed-ddqn-edge-cloud-iot`
+
+Repository purpose:
+- A clean, cloneable, GitHub-ready project package.
+- It is separate from the full working project so old notebooks, caches,
+  checkpoint files, LaTeX aux files, scratch exports, and archived folders do
+  not pollute the shareable research repo.
+
+Included structure:
+- `README.md`
+  - Project overview, Stage-1 Fed-DDQN focus, Stage-2 allocator role, dataset
+    description, main textual results, run instructions, and paper pointers.
+- `requirements.txt`
+  - Python package list for notebook/data-generation work.
+- `data/dataset3/`
+  - Six Dataset3 CSV files, `README_dataset3.txt`, generator copy, and generator
+    test.
+- `notebooks/v6.6.ipynb`
+  - Main notebook copy. Its dataset path was patched in the packaged repo to
+    resolve `data/dataset3` from the repo root or `notebooks/` folder.
+- `src/data_generation/`
+  - `generate_dataset3.py` and `test_dataset3_generator.py`.
+- `scripts/`
+  - `create_v66.py` and `export_v66_figures.py`.
+- `results/exports/`
+  - Manuscript-ready CSV/JSON exports, including main comparison, ablation,
+    scenario table, dataset checksums, reward config, split manifest, and
+    reproducibility manifest.
+- `results/figures/`
+  - Selected reader-facing project figures.
+- `paper/ieee_access/`
+  - Active IEEE Access LaTeX source folders, references, class file, active
+    compiled `main.pdf`, and compile notes.
+- `docs/`
+  - Dataset card, reproducibility notes, results summary, repository structure,
+    copied project context, manuscript plan, and sync ledger.
+
+Files intentionally excluded:
+- `dataset3/_v64_cache/`
+- `dataset3/_v66_cache/`
+- model checkpoints such as `*.pt`
+- pickle/NumPy cache artifacts such as `*.pkl` and `*.npz`
+- LaTeX aux/log/out/bbl build products
+- `Paper_LATEX/old`
+- full scratch/audit/vendor folders not required for a clean shareable package
+
+Git status:
+- Initialized local Git repository on branch `main`.
+- Initial commit created:
+  `e746b63 Initial Fed-DDQN research package`
+- No GitHub remote was configured because the GitHub CLI (`gh`) is not
+  installed in this environment. The repo can still be cloned locally or pushed
+  later after remote setup.
+
+Verification:
+- Packaged notebook JSON parsed successfully.
+- Required files checked:
+  - `README.md`
+  - `requirements.txt`
+  - `data/dataset3/dataset_A.csv`
+  - `results/exports/main_policy_comparison_test_only.csv`
+  - `paper/ieee_access/main.tex`
+  - `paper/ieee_access/main.pdf`
+- Local clone test succeeded:
+  `git clone P:\AI_FED-DDQN\github_repo\fed-ddqn-edge-cloud-iot P:\AI_FED-DDQN\github_repo\_clone_test\fed-ddqn-edge-cloud-iot-clone`
+- Clone contains 112 files and the latest commit is
+  `e746b63 Initial Fed-DDQN research package`.
+- No files above GitHub's 100 MB single-file limit were found.
+
+Next step if the user wants an actual GitHub remote:
+- Install/login GitHub CLI or provide a GitHub remote URL.
+- From `P:\AI_FED-DDQN\github_repo\fed-ddqn-edge-cloud-iot`, run:
+  `git remote add origin <repo-url>`
+  `git push -u origin main`
+
+================================================================================
 END OF CONTEXT FILE
 ================================================================================
