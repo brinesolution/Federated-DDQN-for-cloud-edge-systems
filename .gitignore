@@ -15,16 +15,6 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Runtime caches and model checkpoints
-data/**/_v64_cache/
-data/**/_v66_cache/
-dataset3/**/_v64_cache/
-dataset3/**/_v66_cache/
-*.pt
-*.pth
-*.pkl
-*.npz
-
 paper/
 *.pdf
 

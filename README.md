@@ -1,6 +1,6 @@
 # Fed-DDQN Edge-Cloud IoT Offloading
 
-Personal research-code repository for channel-aware task offloading and adaptive resource allocation in edge-cloud IoT systems.
+Personal research-code repository for channel-aware task offloading and adaptive resource allocation in edge-cloud IoT systems. This is a research-related project package: it keeps the runnable code, generated datasets, experiment history, cached model artifacts, and result summaries together, while leaving paper drafts and publishing files outside the repo.
 
 This repository contains the **code, dataset, scripts, exported metrics, and result figures** needed to inspect and rerun the project.
 
@@ -17,7 +17,8 @@ The main proposed model is **Fed-DDQN**. Other methods are included as compariso
 
 ```text
 data/dataset3/        Synthetic edge-cloud IoT benchmark CSVs and generator copy
-notebooks/            Main experimental notebook
+data/old/             Earlier dataset snapshots used during development
+notebooks/            Main experimental notebook and older notebook versions
 src/data_generation/  Dataset generator and generator test
 scripts/              Helper scripts for notebook and figure export work
 results/exports/      CSV/JSON experiment outputs
@@ -39,6 +40,13 @@ docs/                 Dataset, results, and reproducibility notes
 | `cloud_state.csv` | 10,000 | Cloud node state over 1,000 timesteps |
 
 The dataset is synthetic, not measured telemetry.
+
+Earlier dataset snapshots are kept under `data/old/`:
+
+- `data/old/Datasets/`
+- `data/old/Datasets2/`
+
+These are included for project history and comparison against the final Dataset3 benchmark.
 
 ## Main Results
 
@@ -92,7 +100,16 @@ jupyter lab notebooks/v6.6.ipynb
 
 The notebook copy resolves the dataset from `data/dataset3` when run from either the repository root or the `notebooks/` folder.
 
-Model checkpoints and long-run training caches are not included. Use `results/exports/` to inspect saved output metrics without retraining.
+Quick-run caches are included under:
+
+```text
+data/dataset3/_v64_cache/
+data/dataset3/_v66_cache/experiment_exports/
+```
+
+These cache files allow faster inspection and reruns when the notebook configuration matches the included Dataset3 snapshot. Use `results/exports/` to inspect saved output metrics without retraining.
+
+Older notebook versions are stored in `notebooks/old/` for development history. The main current experiment entrypoint remains `notebooks/v6.6.ipynb`.
 
 ## Regenerating Dataset3
 
@@ -105,6 +122,7 @@ Back up the included CSVs before overwriting them if you need to preserve this s
 ## Documentation
 
 - `docs/DATASET_CARD.md`
+- `docs/HISTORY_AND_CACHE.md`
 - `docs/RESULTS_SUMMARY.md`
 - `docs/REPRODUCIBILITY.md`
 - `docs/REPOSITORY_STRUCTURE.md`

@@ -1,0 +1,4 @@
+Ablation,Seed,Avg Latency,SLA %,SLA Miss %,Rejection %,Edge Usage %,Comm Delay (ms),BW Consump %,Best Val Score,Best Round,Rounds Ran,Loaded Cache,Runtime Sec
+Fed-DDQN Proposed v6.6,42,136.009,97.73,2.27,3.68,67.43,40.965,26.76,131.23173751466177,7,13,True,0.02
+Fed-DDQN Proposed v6.6,77,137.307,97.76,2.24,3.65,68.06,40.806,25.96,131.01934826847344,10,15,False,2044.14
+Fed-DDQN Proposed v6.6,123,137.249,97.64,2.36,3.78,67.19,41.259,26.89,131.6935677212372,7,13,False,1531.24

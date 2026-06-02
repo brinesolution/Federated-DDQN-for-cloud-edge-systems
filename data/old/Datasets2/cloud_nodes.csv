@@ -1,0 +1,11 @@
+cloud_id,region,cloud_cpu_capacity,cloud_memory_capacity,cloud_bandwidth_capacity,sla_tier
+1,us-west,78856.3,194.9,3547.7,gold
+2,us-east,56049.0,300.5,2449.2,silver
+3,ap-south,68838.1,385.2,1058.3,bronze
+4,us-east,62518.7,495.6,3167.9,gold
+5,us-west,21652.1,448.0,2272.6,silver
+6,us-west,74256.0,323.2,1580.0,silver
+7,eu-central,46994.3,369.9,3195.6,gold
+8,eu-central,27135.5,448.7,1749.9,silver
+9,ap-south,70118.0,299.8,2595.9,silver
+10,eu-central,32134.9,420.7,1960.2,bronze
