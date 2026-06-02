@@ -1,0 +1,29 @@
+\section{Experimental Setup}
+\label{sec:experimental_setup}
+
+All reported numbers are drawn from the same experimental run and are maintained through shared result macros. This keeps tables, figures, and text synchronized across the manuscript.
+
+\subsection{Split Protocol and Preprocessing}
+
+The temporal split is train arrival time $\leq 700$, validation 716--850, and test 866--1000, with gaps 701--715 and 851--865 excluded. The scaler is fit on the training split only. Final comparisons use only the test split, which prevents the model from being tuned on the same time interval used for the final claims.
+
+\input{tables/hyperparameters}
+
+\subsection{Comparison Methods}
+
+The compared policies are DDQN, MTOSA, FL-DDPG, GTPSO, PTS-RA, JTOS, \fedddqn{} (Proposed), and Oracle. DDQN is implemented as a faithful centralized DDQN-style baseline.
+FL-DDPG is used as a federated actor--critic-style comparator, while MTOSA, GTPSO, PTS-RA, and JTOS are implemented as style-inspired scheduling or metaheuristic comparators inside the same evaluation pipeline. Oracle is included only as a latency-reference rule using generated edge/cloud latency information and is not a deployable trainable method.
+
+\input{tables/baselines}
+
+\subsection{Evaluation Metrics}
+
+The main policy metrics are average latency, SLA satisfaction, SLA miss, rejection rate, edge usage, communication delay, and bandwidth use. Scenario and task-type results check behavior under emergency, firmware, corrupt, low-battery, deadline-admission flag, dependency, encryption, and real-time conditions. Multi-seed analysis checks stability across seeds 42, 77, and 123. Ablation analysis tests prioritized replay, action-aware pressure, FedProx, target-update style, and the heavy-task penalty.
+
+\input{tables/evaluation_metrics}
+
+\subsection{Fairness and Reproducibility Controls}
+
+The final comparison is test-only. Validation is used for checkpoint selection and early stopping. The test interval is not used to choose hyperparameters. All policies are evaluated on the same held-out interval with the same metric functions. The checkpointing algorithm uses the same validation objective as Eq.~\eqref{eq:validation_score_main}; no simplified validation objective is used for the reported model selection.
+
+The experiments are configured as a controlled benchmark comparison. All methods share the same data, temporal split, feature pipeline, and metric functions. The baseline implementations provide aligned comparators within this evaluation environment, allowing the reported differences to reflect policy behavior rather than differences in preprocessing or scoring.

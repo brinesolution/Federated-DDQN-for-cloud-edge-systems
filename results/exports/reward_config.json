@@ -1,0 +1,27 @@
+{
+  "action_space": {
+    "0": "edge",
+    "1": "cloud"
+  },
+  "cache_note": "Existing model caches are preserved; terminal masking is applied whenever affected models are retrained after this hook update.",
+  "fed_validation_score": {
+    "avg_latency_weight": 1.0,
+    "edge_overuse_soft_cap_percent": 78.0,
+    "edge_overuse_weight": 0.8,
+    "heavy_edge_bad_weight": 1.2,
+    "rejection_percent_weight": 2.5,
+    "sla_miss_percent_weight": 5.0
+  },
+  "gamma_default": 0.95,
+  "proposed_controls": {
+    "action_aware_env": false,
+    "heavy_task_edge_penalty": true,
+    "mu_proximal": 0.003,
+    "prioritized_replay": false,
+    "target_tau": 0.012
+  },
+  "rejection_is_outcome_not_action": true,
+  "stage_1_model": "Federated Double DQN",
+  "terminal_masked_target_formula": "r + gamma * (1 - done) * Q_target(next_state, argmax_a Q_online(next_state, a))",
+  "terminal_masked_training_hooks_present": true
+}

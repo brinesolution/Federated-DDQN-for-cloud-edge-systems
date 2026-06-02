@@ -1,0 +1,29 @@
+\begin{table*}[!t]
+\centering
+\caption{Additional method notation and implementation parameters.}
+\label{tab:method_parameters}
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+Symbol & Meaning in this benchmark implementation \\
+\midrule
+$u_i^{\min}$ & Minimum normalized edge CPU availability required by task $i$ after converting demand to the generator-native availability scale. \\
+$\bar{m}_i$ & Minimum normalized edge memory availability required by task $i$ after converting memory demand to the generator-native availability scale. \\
+$P_i^e$ & Edge-pressure penalty used when local queue, edge overload, or edge-overuse risk makes an edge decision less desirable. \\
+$H_i$ & Heavy-task edge-misrouting indicator for AI, video, image, and firmware-like tasks when cloud execution is predicted to be safer or faster. \\
+$h_i$ & Compact heavy-task flag used in margin and allocator formulas; $h_i=1$ for cloud-favorable heavy task categories and $0$ otherwise. \\
+$\bar{\delta}_i$ & Deadline-tightness score for task $i$; larger values mean tighter deadlines after normalization. \\
+$\chi_i^{\mathrm{rt}}$ & Binary real-time task flag used in Stage-2 urgency and allocation-target generation. \\
+$\mathcal{G}^{\mathrm{valid}}_e(j,t)$ & Allocator-valid edge-selected task group sharing edge node $j$ and timestep $t$ in the Stage-2 normalization pass. \\
+$C^r_{j,t}$ & Normalized available capacity of edge node $j$ for resource channel $r\in\{\mathrm{cpu},\mathrm{mem},\mathrm{bw}\}$ at time $t$. \\
+$\epsilon$ & Small positive constant used in denominators and projection formulas to avoid division by zero. \\
+$\alpha_{\mathrm{res}},\alpha_{\mathrm{dem}}$ & Fixed blend weights for the Stage-2 residual and rejection-aware demand branches; the implementation uses $0.10$ and $0.90$, respectively. \\
+$\omega_i$ & Bounded Stage-2 demand multiplier derived from urgency and pre-decision QoS/admission-risk features. \\
+$\rho_i^{\mathrm{sla}}$ & Pre-decision edge-SLA-risk component used inside the Stage-2 rejection-aware demand branch. \\
+$\mathbf{d}^{\mathrm{raw}}_i$ & Bounded demand-score vector used before Stage-2 demand-branch capacity normalization. \\
+$z_i$ & Allocator input vector containing task, state, policy-output, demand, and pre-decision risk features for task $i$. \\
+$f_{\phi}$ & Residual resource-allocation network parameterized by $\phi$. \\
+$\zeta_i^{\mathrm{term}}$ & Binary terminal-mask indicator for the DDQN target; it is one at split, gap, sequence, or final-sample boundaries where bootstrapping is suppressed. \\
+\bottomrule
+\end{tabularx}
+\end{table*}

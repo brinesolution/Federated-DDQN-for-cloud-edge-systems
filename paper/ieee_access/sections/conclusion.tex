@@ -1,0 +1,38 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+The work presented a two-stage edge-cloud IoT scheduling method. The primary contribution is a zone-aware \fedddqn{} policy for binary edge/cloud task offloading. The secondary contribution is a rejection-aware residual allocator for CPU, memory, and bandwidth assignment after edge execution is selected.
+
+On \dataset{}, the proposed policy achieved \FedLatency{} ms average test latency, \FedSLA\% SLA satisfaction, and \FedRejection\% rejection. It improved latency by \FedVsDDQN\% relative to centralized DDQN and by \FedVsFLDDPG\% relative to the FL-DDPG-style baseline, while the latency-reference Oracle remained lower at \OracleLatency{} ms. On the allocator-valid edge-selected subset, the hand-designed rejection-aware demand rule gave the lowest proxy-target MAE, while residual learning with risk projection and capacity normalization gave the best efficiency score, \AllocatorBestEfficiency{}, the lowest under-allocation, and zero capacity violation.
+
+The practical implication is that offloading should be treated as a channel-aware and resource-aware control problem, not a single latency-minimization decision. In burst windows, an edge node can be attractive for one urgent task and still be a poor destination for a group of heavy tasks arriving at the same time. The proposed policy uses state variables that reflect local edge pressure, cloud delay, packet loss, bandwidth, task priority, and deadline sensitivity. As a result, the learned decision can change when the same task profile appears under different network or queue states.
+
+Table~\ref{tab:deployment_reading} summarizes the deployment reading of the final scheduler.
+
+\begin{table}[H]
+\centering
+\caption{Operational reading of the two-stage scheduler.}
+\label{tab:deployment_reading}
+\footnotesize
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.22\columnwidth}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+Condition & Stage-1 offloading response & Stage-2 allocation response \\
+\midrule
+Queue burst or local contention & Reduce unnecessary edge selection and favor cloud when local delay risk dominates. & Preserve bounded edge resources for accepted urgent tasks. \\
+Channel degradation or packet loss & Use network-state features to avoid cloud paths with poor transmission quality. & Avoid over-allocating bandwidth when the selected path is already channel-limited. \\
+Tight deadline and high priority & Prefer the destination with lower predicted service delay and lower QoS/admission risk. & Increase correction weight for deadline-sensitive tasks within node capacity. \\
+Heavy video, AI, or firmware load & Avoid treating all large tasks as edge-favorable merely because edge execution can be fast. & Normalize CPU, memory, and bandwidth so heavy tasks do not starve nearby tasks. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The table separates what the proposed method learns from how it can be deployed. Stage 1 selects an execution tier and is penalized when the selected path is infeasible under changing channel and queue conditions. Stage 2 turns an accepted edge decision into resource shares that are bounded, risk-aware, and comparable across task classes.
+
+The federated structure also matters in deployment. Instead of assuming that all edge-zone traces can be pooled centrally, the training loop allows zone-level learners to update locally and share model parameters through aggregation. This matches IoT deployments where traffic patterns vary across urban, industrial, rural, and mobile edge zones. The global model captures common offloading behavior while still benefiting from heterogeneous local experience. FedProx-style regularization, validation checkpointing, and the balanced reward design stabilize learning when local workload distributions differ.
+
+The Stage-2 allocator matters after the offloading decision is made. Edge selection alone does not guarantee that a task receives enough CPU, memory, and bandwidth to match the generated proxy target. The residual allocator starts from demand-proportional assignment, learns corrections for deadline, priority, and QoS/admission-risk conditions, and then applies capacity normalization so the final allocation remains feasible. This separates the routing question from the resource-admission question while keeping both stages tied to the same QoS objective.
+
+In an operational edge platform, the same structure can be used as a layered scheduler. The Stage-1 policy selects the execution tier using current task, channel, and node-state information. The Stage-2 allocator then converts an edge decision into bounded resource shares that respect node capacity. This modularity makes the design easier to monitor because routing metrics and resource-admission metrics can be inspected separately while still being optimized toward a common QoS objective.
+
+Taken together, the results show that federated DDQN-based offloading and rejection-aware adaptive allocation form a coherent scheduling pipeline for edge-cloud IoT systems. The method reduces latency against the implemented main comparison methods, preserves high SLA satisfaction, controls rejection, and provides interpretable diagnostics through scenario, ablation, and allocator analyses. Future work can extend this pipeline with measured deployment traces, secure aggregation, additional workload generators, and a closed-loop simulator in which policy actions update subsequent queue and resource states.

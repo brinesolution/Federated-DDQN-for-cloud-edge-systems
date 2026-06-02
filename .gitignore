@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Runtime caches and model checkpoints
+data/**/_v64_cache/
+data/**/_v66_cache/
+dataset3/**/_v64_cache/
+dataset3/**/_v66_cache/
+*.pt
+*.pth
+*.pkl
+*.npz
+
+# LaTeX build products
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# Keep the manuscript PDF, but ignore generated rebuild copies by default
+paper/ieee_access/rebuild.pdf
+
+# Local scratch
+tmp/
+scratch/
+_scratch/

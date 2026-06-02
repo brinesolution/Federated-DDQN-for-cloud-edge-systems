@@ -1,0 +1,17 @@
+\begin{figure*}[!t]
+\centering
+\fbox{\begin{minipage}{0.95\textwidth}
+\textbf{Algorithm 2: Validation Checkpointing and Test-Only Evaluation}\\[0.35em]
+\textbf{Input:} trained round checkpoints, validation split, untouched test split, latency/rejection lookup functions.\\
+\textbf{Output:} final comparison table and recorded policy actions.\\[0.35em]
+1) For each candidate global model, infer validation actions with \texttt{torch.inference\_mode()}.\\
+2) Compute selected latency, SLA miss percentage, and rejection percentage on validation rows only.\\
+3) Rank checkpoints with $S_{\mathrm{val}}=\bar{L}_{\mathrm{val}}+5M_{\mathrm{SLA,val}}+2.5R_{\mathrm{val}}+0.8[U^e_{\mathrm{val}}-78]_+ + 1.2H_{\mathrm{val}}$, where miss, rejection, edge-use, and heavy-task misuse rates are measured in percentage points.\\
+4) Restore the checkpoint with the lowest validation score.\\
+5) Freeze the model and infer actions on the test split once. Record those actions with a dataset/configuration signature.\\
+6) Compute all final metrics from the test split only.\\
+7) Reuse the recorded actions for plots, task-type analysis, scenario tables, and allocator input so repeated inference does not change reported results.
+\end{minipage}}
+\caption{Checkpointing and evaluation discipline used to keep the final test interval out of model selection.}
+\label{alg:checkpointing}
+\end{figure*}

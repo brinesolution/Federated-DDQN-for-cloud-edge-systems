@@ -1,0 +1,25 @@
+\begin{table*}[!t]
+\centering
+\caption{Untouched temporal test comparison.}
+\label{tab:main_results}
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Method & Avg. latency (ms) & SLA (\%) & SLA miss (\%) & Rejection (\%) & Edge usage (\%) & Comm. delay (ms) & Bandwidth use (norm.) \\
+\midrule
+DDQN & 144.926 & 97.49 & 2.51 & 3.90 & 73.71 & 36.642 & 19.83 \\
+MTOSA & 231.841 & 89.71 & 10.29 & 11.52 & 25.50 & 71.153 & 51.35 \\
+FL-DDPG & 138.373 & 97.67 & 2.33 & 3.74 & 71.23 & 38.146 & 22.33 \\
+GTPSO & 203.551 & 90.36 & 9.64 & 10.89 & 10.62 & 68.149 & 47.39 \\
+PTS-RA & 228.897 & 90.61 & 9.39 & 10.64 & 12.49 & 72.627 & 50.92 \\
+JTOS & 207.521 & 90.54 & 9.46 & 10.71 & 18.30 & 71.970 & 54.46 \\
+\fedddqn{} (Proposed) & \textbf{136.009} & \textbf{97.73} & \textbf{2.27} & \textbf{3.68} & 67.43 & 40.965 & 26.76 \\
+Oracle & 123.310 & 97.99 & 2.01 & 3.43 & 69.27 & 39.037 & 24.92 \\
+\bottomrule
+\end{tabular}}
+\begin{minipage}{0.96\textwidth}
+\vspace{0.2em}
+\scriptsize\emph{Note:} Bold marks the best deployable/trainable method among the main comparison methods. Oracle is a non-trainable latency reference over generated finite edge/cloud alternatives, not a universal QoS ceiling. Bandwidth use is reported in generator-native normalized units used by the benchmark feature and metric pipeline.
+\end{minipage}
+\end{table*}

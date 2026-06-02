@@ -1,0 +1,32 @@
+\begin{table*}[!t]
+\centering
+\caption{Key training and evaluation configuration.}
+\label{tab:hyperparameters}
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+Item & Value \\
+\midrule
+Dataset & \dataset{}. \\
+Task count / edge nodes / cloud nodes / timesteps & 100,000 / 50 / 10 / 1,000. \\
+Feature dimension & 30 for Stage-1 offloading. \\
+Temporal split & Train $\leq$ 700, gap 701--715, validation 716--850, gap 851--865, test 866--1000. \\
+Train / validation / test rows & 69,049 / 17,056 / 11,957. \\
+Stage-2 allocator denominator & \StageTwoEdgeTasks{} edge-selected tasks out of \StageTwoValidTasks{} allocator-valid test tasks. \\
+Action space & Binary: edge or cloud. \\
+Q-network & Dueling network: 30-256-256 shared extractor, 256-128-1 value stream, 256-128-2 advantage stream. \\
+Discount factor & $\gamma = 0.95$. \\
+Batch size & 512. \\
+Federated rounds & 15 maximum; proposed run stopped after 13 rounds. \\
+MAX\_STEPS & 6000. \\
+Target update & Soft update with $\tau = 0.012$; baseline hard update interval 200 where used. \\
+FedProx & $\mu = 0.003$, interval 4, maximum drift clamp $1.0\times 10^4$. \\
+Replay buffer & Tensor replay buffer; 30,000 per zone for proposed \fedddqn. \\
+Optimizer & AdamW for proposed zone models, learning rate $5\times 10^{-4}$, weight decay $1\times 10^{-4}$. \\
+Validation patience & 6 rounds. \\
+Verified multi-seed set & 42, 77, 123. \\
+Allocator & ResidualResourceAllocator, input dimension 57, hidden widths 160, 96, 48, output dimension 3. \\
+Allocator training & 35 epochs, AdamW learning rate $8\times 10^{-4}$, weight decay $8\times 10^{-5}$. \\
+\bottomrule
+\end{tabularx}
+\end{table*}

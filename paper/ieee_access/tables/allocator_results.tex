@@ -1,0 +1,43 @@
+\begin{table*}[!t]
+\centering
+\caption{Stage-2 allocator proxy-target error and feasibility on $\mathcal{I}^{\mathrm{valid}}_e$, the Fed-DDQN edge-selected allocator-valid test subset.}
+\label{tab:allocator_results}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Method & Overall MAE & Underalloc. (\%) & Waste (\%) & Cap. viol. (\%) \\
+\midrule
+Equal Allocation & 0.3030 & 16.59 & 57.01 & 0.00 \\
+Demand-Proportional & 0.0656 & 23.56 & 16.93 & 0.00 \\
+Priority-Weighted & 0.2808 & 10.89 & 47.09 & 0.00 \\
+Deadline-Aware & 0.3268 & 23.06 & 52.60 & 0.00 \\
+Rejection-Aware Demand & \textbf{0.0196} & 6.98 & \textbf{5.46} & 0.00 \\
+Residual Allocator Raw & 0.0504 & 11.39 & 19.24 & 35.16 \\
+Residual + Capacity Norm & 0.0366 & 15.23 & 12.12 & 0.00 \\
+Residual + Risk Projection & 0.0204 & \textbf{6.65} & 5.75 & \textbf{0.00} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+\caption{Stage-2 allocator proxy-target and QoS-oriented comparison on the allocator-valid edge-selected subset.}
+\label{tab:allocator_qos}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\textwidth}{@{}lrrX@{}}
+\toprule
+Method & Est. SLA risk (\%) & Efficiency & Interpretation \\
+\midrule
+Equal Allocation & 4.57 & 58.319 & Balanced but wastes resource because task demand is ignored. \\
+Demand-Proportional & 5.96 & 66.692 & Low error relative to simple baselines, but under-allocation remains high. \\
+Priority-Weighted & 3.31 & 68.623 & Reduces risk for urgent tasks but wastes more resource. \\
+Deadline-Aware & 3.12 & 54.338 & Protects deadlines but over-allocates and loses efficiency. \\
+Rejection-Aware Demand & 3.55 & 89.062 & Best MAE and waste, using the hand-designed risk-aware demand rule. \\
+Residual Allocator Raw & 4.08 & 57.773 & Neural residual learns useful corrections but violates capacity before projection. \\
+Residual + Capacity Norm & 3.61 & 78.120 & Removes capacity violations and improves feasibility. \\
+Residual + Risk Projection & 3.50 & \textbf{89.295} & Best efficiency, lowest under-allocation, and zero capacity violation. \\
+\bottomrule
+\end{tabularx}
+\end{table*}

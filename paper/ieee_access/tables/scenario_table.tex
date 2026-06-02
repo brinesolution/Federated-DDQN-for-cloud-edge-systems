@@ -1,0 +1,28 @@
+\begin{table}[H]
+\centering
+\caption{Fed-DDQN scenario behavior on the valid held-out policy-evaluation subset. Scenario subsets are test/evaluation slices and may overlap.}
+\label{tab:scenario_behavior}
+\scriptsize
+\setlength{\tabcolsep}{2.4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}p{0.30\columnwidth}rrrr@{}}
+\toprule
+Scenario & $N$ & Avg. lat. & SLA miss & Edge use \\
+\midrule
+All valid rows & 9733 & 136.855 $\pm$ 0.599 & 2.29 $\pm$ 0.05 & 67.56 $\pm$ 0.37 \\
+Normal traffic & 4061 & 70.914 $\pm$ 0.204 & 0.26 $\pm$ 0.01 & 67.56 $\pm$ 0.33 \\
+Congestion & 5672 & 184.066 $\pm$ 0.923 & 3.75 $\pm$ 0.09 & 67.56 $\pm$ 0.86 \\
+Jitter storm & 447 & 199.934 $\pm$ 0.952 & 2.98 $\pm$ 0.10 & 87.47 $\pm$ 0.73 \\
+High edge queue & 845 & 245.461 $\pm$ 2.105 & 11.05 $\pm$ 0.31 & 58.50 $\pm$ 2.54 \\
+Emergency & 492 & 34.049 $\pm$ 1.146 & 22.76 $\pm$ 0.17 & 99.19 $\pm$ 0.60 \\
+Real-time & 4130 & 43.251 $\pm$ 0.319 & 5.40 $\pm$ 0.12 & 98.41 $\pm$ 0.38 \\
+Low battery & 958 & 144.930 $\pm$ 1.125 & 3.44 $\pm$ 0.09 & 66.81 $\pm$ 1.20 \\
+AI/video-heavy & 1640 & 282.075 $\pm$ 2.893 & 0.00 $\pm$ 0.00 & 21.44 $\pm$ 0.42 \\
+Firmware & 251 & 252.343 $\pm$ 2.179 & 0.00 $\pm$ 0.00 & 33.73 $\pm$ 2.73 \\
+\bottomrule
+\end{tabular}}
+\begin{minipage}{0.96\columnwidth}
+\vspace{0.2em}
+\scriptsize\emph{Note:} Values are mean $\pm$ standard deviation across the three Fed-DDQN seeds exported for the manuscript. The raw temporal test split contains 11,957 rows; the policy-evaluation subset used for Table~\ref{tab:main_results} contains 9,733 rows after valid generated-latency filtering. Scenario slices are drawn from that valid held-out subset.
+\end{minipage}
+\end{table}

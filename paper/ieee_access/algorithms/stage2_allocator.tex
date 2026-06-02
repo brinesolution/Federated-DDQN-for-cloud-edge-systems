@@ -1,0 +1,16 @@
+\begin{figure*}[!t]
+\centering
+\fbox{\begin{minipage}{0.95\textwidth}
+\textbf{Algorithm 3: Rejection-Aware Residual Resource Allocation}\\[0.35em]
+\textbf{Input:} edge-selected tasks $\mathcal{I}_e$, task/resource features, demand-proportional base allocation $\mathbf{b}_i$, trained residual network $f_{\phi}$.\\
+\textbf{Output:} capacity-feasible allocation $\hat{\mathbf{y}}_i$ for CPU, memory, and bandwidth.\\[0.35em]
+1) For each edge-selected task, compute the demand-proportional base allocation $\mathbf{b}_i$.\\
+2) Concatenate task descriptors, edge state, network state, policy outputs, and the bounded pre-decision QoS/admission-risk estimate $\hat{\rho}_i$ into allocator input $z_i$; do not include realized labels $M_i$, $R_i$, $Q_i$, Oracle actions, or generated final allocation targets.\\
+3) Predict the residual correction $f_{\phi}(z_i)$ and form $\tilde{\mathbf{y}}_i=\mathbf{b}_i+f_{\phi}(z_i)$.\\
+4) Build the rejection-aware demand branch from urgency, deadline, priority, edge-SLA risk, and related pre-decision risk features; blend it with the capacity-normalized residual branch.\\
+5) Project the result into valid normalized capacity so CPU, memory, and bandwidth assignments remain feasible.\\
+6) Report MAE, under-allocation, waste, capacity violation, estimated SLA risk, and efficiency.
+\end{minipage}}
+\caption{Stage-2 allocation procedure for tasks already routed to edge execution by \fedddqn.}
+\label{alg:stage2_allocator}
+\end{figure*}

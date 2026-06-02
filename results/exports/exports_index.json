@@ -1,0 +1,20 @@
+{
+  "export_root": "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports",
+  "skipped_optional": [
+    "gamma_zero_ablation_results.csv",
+    "baseline_multiseed_raw.csv",
+    "baseline_multiseed_summary.csv"
+  ],
+  "written": [
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\dataset_checksums.csv",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\split_manifest.json",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\reward_config.json",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\allocator_target_risk_spec.json",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\main_policy_comparison_test_only.csv",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\fed_ddqn_ablation_summary.csv",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\fed_ddqn_multiseed_raw.csv",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\scenario_wise_final_table.csv",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\reproducibility_manifest.json",
+    "C:\\Users\\mayan\\Desktop\\3STSEM\\ai\\model\\dataset3\\_v66_cache\\manuscript_exports\\exports_index.json"
+  ]
+}

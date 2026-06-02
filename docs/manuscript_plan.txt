@@ -1,0 +1,2485 @@
+================================================================================
+RESEARCH PAPER PLAN
+Federated Double Deep Q-Network for Channel-Aware Task Offloading with
+Rejection-Aware Adaptive Resource Allocation in Edge-Cloud IoT Systems
+================================================================================
+
+Created: 2026-05-30
+Workspace: C:\Users\mayan\Desktop\3STSEM\ai\model
+Plan file: C:\Users\mayan\Desktop\3STSEM\ai\model\Paper_LATEX\plan.txt
+
+This file is the manuscript blueprint only. It does not replace context.txt,
+v6.6.ipynb, dataset3, or the final LaTeX source files. Use it as the writing and
+build plan before creating the actual paper.
+
+================================================================================
+2026-05-30 DUAL-VENUE IMPLEMENTATION CONTROL UPDATE
+================================================================================
+
+Status:
+- Active implementation now builds two synchronized manuscript branches:
+  `Paper_LATEX/scientific_reports` and `Paper_LATEX/ieee_access`.
+- `Paper_LATEX/firstdraft` is preserved as an archived source snapshot.
+- A shared control layer is required at `Paper_LATEX/shared` so repeated result
+  numbers, claim language, figure/table mapping, and sync records do not drift.
+
+Required folders:
+- `Paper_LATEX/shared`
+- `Paper_LATEX/scientific_reports`
+- `Paper_LATEX/ieee_access`
+
+Venue roles:
+- `scientific_reports` follows Scientific Reports / Nature-style structure and
+  concise main-text presentation.
+- `ieee_access` follows IEEE Access engineering-paper structure, with fuller
+  technical exposition, appendix material, and author-biography placeholders.
+
+Shared invariants:
+- Same title, authors, Dataset3 wording, model hierarchy, result numbers, and
+  limitations must appear in both branches.
+- Fed-DDQN remains the proposed Stage-1 edge/cloud offloading model.
+- Stage 2 remains the rejection-aware residual allocator for edge-selected
+  tasks.
+- Rejection is a QoS/infeasibility outcome, not a third scheduling action.
+- Dataset3 is realistic synthetic / real-world-inspired synthetic data, not
+  measured deployment telemetry.
+
+Canonical metric values for both branches:
+- Fed-DDQN latency: 136.009 ms.
+- Fed-DDQN SLA: 97.73%.
+- Fed-DDQN rejection: 3.68%.
+- Fed-DDQN edge usage: 67.43%.
+- DDQN latency: 144.926 ms.
+- FL-DDPG latency: 138.373 ms.
+- Oracle latency: 123.310 ms.
+- Fed-DDQN latency reduction: 6.15% vs DDQN and 1.71% vs FL-DDPG.
+
+Implementation sync rule:
+- Every manuscript change must update this plan or the shared sync ledger.
+- A change is complete only when both venue branches are synchronized or the
+  unsynchronized state is explicitly recorded.
+
+IEEE Access reference-project note:
+- `C:\Project_Solar\05_manuscripts\ieee_access_overleaf_project\latexdraft_3new`
+  was skimmed only as a structural reference for IEEE Access layout discipline:
+  modular `sections`, `tables`, `figures/results`, `figures/diagnostics`,
+  `figures/diagrams`, `macros`, compatibility `ieeeaccess.cls`, BibTeX
+  workflow, and compile notes.
+- No solar/PV scientific text, figures, metrics, claims, or references are to
+  be copied into this project.
+
+Initial implementation ledger:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Start dual-venue build and add shared canonical layer | `Paper_LATEX/scientific_reports` | `Paper_LATEX/ieee_access` | In progress |
+
+================================================================================
+0. CONTROLLING SOURCES AND VENUE STYLE DECISION
+================================================================================
+
+The planning order must follow the instruction document and project context.
+
+Primary sources:
+1. context.txt
+2. v6.6.ipynb
+3. executed outputs inside v6.6.ipynb
+4. df_compare from v6.6.ipynb
+5. final summary cells in v6.6.ipynb
+6. _cell41_output.txt and _cell53_output.txt only if they match current v6.6
+7. dataset3 files
+8. Figures/_export_index.csv and exported figures
+9. Paper_LATEX/INSTRCUTIONS_CODEX.pdf
+10. Paper_LATEX/40 refernces/40_references.bib and related reference files
+11. type1_REFERENCEsample.pdf and type2_REFERENCEsample.pdf only as style
+    references, not as text sources
+12. older notebooks only for development history, not final numerical claims
+
+Important style decision:
+- The current instruction PDF asks for a Springer Nature / Scientific Reports
+  style manuscript.
+- Earlier project discussion mentioned IEEE Access. For this plan, the Springer
+  Nature / Scientific Reports instruction is treated as the controlling style.
+- IEEE Access can still be used as a technical-depth benchmark, but the final
+  manuscript structure should be Springer-compatible unless the user explicitly
+  switches the venue back to IEEE Access.
+
+Current Paper_LATEX assets:
+- ieee_access_template.docx
+- INSTRCUTIONS_CODEX.pdf
+- INSTRCUTIONS_CODEX_extracted.txt
+- type1_REFERENCEsample .pdf
+- type2_REFERENCEsample.pdf
+- 40 refernces/40_references.bib
+- 40 refernces/40_references.csv
+- 40 refernces/40_references.pdf
+- 40 refernces/40_references.tex
+- 40 refernces/40_references.py
+- 40 refernces/build_reference_metadata.py
+
+Current figure assets:
+- Figures/_export_index.csv
+- 171 exported entries total, including notebook text/image outputs and 22
+  paper-oriented figures numbered 150 to 171 in the export index.
+
+================================================================================
+1. PAPER POSITIONING
+================================================================================
+
+Proposed title:
+Federated Double Deep Q-Network for Channel-Aware Task Offloading with
+Rejection-Aware Adaptive Resource Allocation in Edge-Cloud IoT Systems
+
+Core thesis:
+Edge-cloud IoT task offloading should be trained and evaluated as a
+channel-aware, QoS-aware, rejection-aware sequential decision problem under
+non-IID edge zones. The proposed Fed-DDQN policy improves test latency and QoS
+balance over implemented baseline policies while preserving a privacy-aligned
+federated training structure. A second-stage allocator then refines resource
+shares for the tasks selected for edge execution.
+
+Core model hierarchy:
+1. Stage 0: Dataset3, feature engineering, latency/rejection label generation.
+2. Stage 1: Proposed Fed-DDQN for task offloading between edge and cloud.
+3. Stage 2: Rejection-aware residual resource allocator for CPU, memory, and
+   bandwidth after Fed-DDQN has selected edge execution.
+
+The proposed/main model is Fed-DDQN. Other models are baselines for comparison.
+The resource allocator is a secondary post-offloading module; it should not be
+framed as replacing the offloading policy.
+
+Conservative claim style:
+- Say "realistic synthetic dataset" or "real-world-inspired synthetic traces".
+- Do not say "real-world measured deployment data".
+- Say the proposed method gives the lowest average test latency among the
+  implemented trainable policies in the current v6.6 run.
+- Do not claim dramatic dominance over FL-DDPG. The margin is small.
+- Say Oracle is an unattainable/reference ceiling, not a trainable method.
+- Say multi-seed evidence supports stability across three seeds, not exhaustive
+  statistical proof across all operating regimes.
+- If an ablation variant has slightly lower latency on one metric, explain that
+  the proposed configuration is selected for balanced validation objective,
+  rejection/SLA behavior, and research design consistency, not strict dominance
+  on every scalar metric.
+
+================================================================================
+2. RESEARCH QUESTIONS
+================================================================================
+
+RQ1:
+Can a zone-aware Fed-DDQN policy reduce task offloading latency under dynamic
+edge, cloud, and network states compared with centralized DDQN, FL-DDPG, and
+heuristic/metaheuristic baselines?
+
+RQ2:
+Does channel-aware and rejection-aware reward design produce better SLA and
+rejection behavior than latency-only or less constrained baselines?
+
+RQ3:
+Does federated training across edge zones provide a practical structure for
+non-IID IoT workload regions while maintaining competitive test performance?
+
+RQ4:
+How close is the learned Fed-DDQN policy to the Oracle ceiling across task
+types, network regimes, and stress scenarios?
+
+RQ5:
+After Fed-DDQN selects edge execution, can a rejection-aware residual allocator
+improve resource assignment quality and reduce under-allocation, waste, and
+capacity violations compared with simpler allocation rules?
+
+================================================================================
+3. CONTRIBUTIONS TO STATE IN INTRODUCTION
+================================================================================
+
+Use a concise contribution list, probably six bullets:
+
+1. A zone-aware Federated Double Deep Q-Network framework for edge-cloud IoT task
+   offloading under non-IID edge zones.
+
+2. A channel-aware and QoS-aware reward formulation that incorporates latency,
+   SLA violation, rejection risk, edge pressure, and heavy-task penalties.
+
+3. A rejection-aware task modelling pipeline that identifies infeasible or risky
+   offloading cases without allowing sentinel latency values to pollute training
+   features.
+
+4. A realistic synthetic Dataset3 benchmark with temporal bursts, outage,
+   congestion, jitter, edge degradation, cloud maintenance, workload phases, and
+   precomputed contention effects while preserving fixed CSV schemas.
+
+5. A two-stage decision pipeline in which Fed-DDQN performs edge/cloud
+   offloading and a residual resource allocator refines CPU, memory, and
+   bandwidth shares for edge-selected tasks.
+
+6. A test-only evaluation against DDQN, MTOSA, FL-DDPG, GTPSO, PTS-RA, JTOS, and
+   Oracle, with scenario-wise, multi-seed, ablation, and resource-allocation
+   analyses where supported by verified v6.6 outputs.
+
+================================================================================
+4. EXACT VERIFIED NUMBERS TO USE
+================================================================================
+
+Use these values unless a later clean v6.6 run changes them. Do not mix these
+with old v6.2, v6.3, or v6.5 values.
+
+Main untouched-test comparison from v6.6 Cell 34:
+
+Method                 Avg Latency   SLA %   SLA Miss %   Rejection %   Edge %
+DDQN                   144.926       97.49   2.51         3.90          73.71
+MTOSA                  231.841       89.71   10.29        11.52         25.50
+FL-DDPG                138.373       97.67   2.33         3.74          71.23
+GTPSO                  203.551       90.36   9.64         10.89         10.62
+PTS-RA                 228.897       90.61   9.39         10.64         12.49
+JTOS                   207.521       90.54   9.46         10.71         18.30
+Fed-DDQN (Proposed)    136.009       97.73   2.27         3.68          67.43
+Oracle                 123.310       97.99   2.01         3.43          69.27
+
+Additional main metrics:
+- Fed-DDQN average communication delay: 40.965 ms
+- Fed-DDQN average bandwidth allocation: 26.76
+- Fed-DDQN best validation round: 7
+- Fed-DDQN best validation score: 131.2317
+- Fed-DDQN rounds actually run: 13
+- Fed-DDQN improvement vs DDQN: 6.15% lower latency
+- Fed-DDQN improvement vs FL-DDPG: 1.71% lower latency
+- Fed-DDQN improvement vs MTOSA: about 41.3% lower latency
+- Fed-DDQN improvement vs GTPSO: about 33.2% lower latency
+- Fed-DDQN improvement vs PTS-RA: about 40.6% lower latency
+- Fed-DDQN improvement vs JTOS: about 34.5% lower latency
+
+Multi-seed summary from completed v6.6 output:
+- Seeds: 42, 77, 123
+- Proposed Fed-DDQN latency: 136.009, 137.307, 137.249 ms
+- Proposed Fed-DDQN mean latency: 136.855 +/- 0.599 ms
+- Proposed SLA: 97.71 +/- 0.05%
+- Proposed rejection: 3.70 +/- 0.06%
+- Proposed edge usage: 67.56 +/- 0.37%
+- Proposed best validation score: 131.315 +/- 0.281
+- Proposed rounds: 13.7 +/- 0.9
+
+Ablation summary:
+- + Prioritized Replay: latency 137.221 +/- 1.089, SLA 97.64, rejection 3.77
+- + Action-Aware Pressure: latency 136.393 +/- 0.896, SLA 97.68, rejection 3.73
+- No FedProx: latency 136.495 +/- 0.272, SLA 97.65, rejection 3.77
+- Hard Target Update: latency 137.266 +/- 0.501, SLA 97.71, rejection 3.70
+- No Heavy-Task Penalty: latency 136.845 +/- 0.498, SLA 97.68, rejection 3.73
+
+Important interpretation:
+- Some ablations can be slightly lower in mean latency than the full proposed
+  model on this limited three-seed analysis.
+- The paper should frame the proposed configuration as the balanced and
+  validation-selected design, not as best on every ablation metric.
+
+Fed-DDQN task-type behavior:
+Task type          N      Fed edge %   Oracle edge %   Agreement %
+ai                 909    19.58        27.17           80.97
+emergency          492    99.80        99.59           99.39
+firmware_update    251    35.46        30.68           84.06
+image              2742   40.04        48.07           80.31
+sensor             2620   99.62        98.21           97.98
+telemetry          970    96.49        95.46           94.02
+video              731    24.35        21.48           81.81
+voice              1018   96.56        93.71           92.44
+
+Stage-2 allocator direct evaluation:
+- Base Demand overall MAE: 0.0509
+- Residual allocator CPU MAE: 0.0276
+- Residual allocator memory MAE: 0.0200
+- Residual allocator bandwidth MAE: 0.0170
+- Residual allocator overall MAE: 0.0215
+
+Stage-2 edge-selected test tasks:
+- Fed-DDQN edge-selected test tasks: 6,563
+- Residual Raw capacity violation: 35.16%
+- Capacity-normalized variants: 0.00% capacity violation
+
+Allocator ablation/comparison:
+Method                         Overall MAE   Under %   Waste %   Cap Viol %   Est Lat   Est SLA Risk   Efficiency
+Full Residual + Risk Projection 0.0204        6.65      5.75      0.00         85.512    3.50           89.295
+Rejection-Aware Demand          0.0196        6.98      5.46      0.00         85.254    3.55           89.062
+Residual + Capacity Norm        0.0366        15.23     12.12     0.00         --        3.61           78.120
+Residual Raw                    0.0504        --        --        35.16        --        --             57.773
+Base Demand Only                0.0656        23.56     16.93     0.00         --        5.96           66.692
+
+Important allocator interpretation:
+- Rejection-Aware Demand may have slightly lower raw MAE than Full Residual +
+  Risk Projection.
+- Full Residual + Risk Projection is preferred because it gives the best
+  combined efficiency score and lower estimated SLA risk while respecting
+  capacity constraints.
+
+Edge-case / scenario facts:
+- Emergency tasks: count 6493, edge 92.5%, cloud 7.5%, rejection flag 26.4%,
+  SLA violation 26.4%, avg edge latency 28.6 ms, avg cloud latency 176.2 ms.
+- Firmware update tasks: count 7546, edge 2.1%, cloud 97.9%, rejection flag
+  1.5%, SLA violation 0.0%, avg edge latency 404.7 ms, cloud latency 266.7 ms.
+- Corrupt tasks: count 826, edge 40.4%, cloud 59.6%, rejection flag 18.0%,
+  SLA violation 33.9%.
+- Low battery tasks: count 9420, edge 18.7%, cloud 81.3%, rejection 4.4%,
+  SLA violation 8.9%.
+- Impossible deadline tasks: count 1507, edge 0.4%, cloud 99.6%, rejection
+  100.0%, SLA violation 20.0%.
+- Dependencies: count 13752, edge 16.9%, cloud 83.1%.
+- Encrypted tasks: count 54764, edge 21.8%, cloud 78.2%.
+- Real-time tasks: count 43254, edge 30.9%, cloud 69.1%.
+- Outage rejection during event: 0.182 vs 0.035 outside event.
+- Congestion rejection during event: 0.049 vs 0.028 outside event.
+- Jitter rejection during event: 0.043 vs 0.038 outside event.
+
+Final summary facts:
+- OffloadNet accuracy: 96.68%
+- OffloadNet weighted F1: 0.9672
+- OffloadNet ROC-AUC: 0.9800
+- System rejection flag count: 3899
+- System rejection rate: 0.0390
+- System SLA violation rate: 0.0827
+- Emergency edge label: 92.55%
+- Zones: industrial, rural, suburban, urban
+- Static sanity checks passed in the saved v6.6 summary.
+
+================================================================================
+5. MANUSCRIPT STRUCTURE
+================================================================================
+
+Use a Springer Nature / Scientific Reports compatible structure.
+
+Front matter:
+- Title
+- Author names: currently unknown, use placeholders until user provides exact
+  names and affiliations
+- Affiliations
+- Corresponding author placeholder
+- Abstract
+- Keywords
+
+Main sections:
+1. Introduction
+2. Related Work
+3. System Model and Problem Formulation
+4. Proposed Methodology
+5. Experimental Setup
+6. Results
+7. Discussion
+8. Limitations
+9. Conclusion
+10. Data Availability
+11. Code Availability
+12. Author Contributions
+13. Funding
+14. Competing Interests
+15. Ethics Approval and Consent to Participate
+16. References
+17. Supplementary Information, if needed
+
+If the final journal is switched to IEEE Access:
+- Keep the same technical sections but merge declarations into IEEE style.
+- Use IEEEtran/IEEE Access class and IEEE citation formatting.
+- Keep all results and claims unchanged.
+
+================================================================================
+6. SECTION-BY-SECTION WRITING PLAN
+================================================================================
+
+6.1 Abstract
+
+Target length:
+- 180 to 230 words if using Scientific Reports style.
+
+Must include:
+- Problem: edge-cloud IoT task offloading under time-varying network, edge, and
+  cloud contention.
+- Method: zone-aware Fed-DDQN with channel-aware and rejection-aware reward.
+- Stage 2: residual resource allocator for CPU/memory/bandwidth after edge
+  selection.
+- Dataset: Dataset3, realistic synthetic benchmark with burst, outage,
+  congestion, and failure effects.
+- Key results: Fed-DDQN 136.009 ms latency, 97.73% SLA, 3.68% rejection,
+  6.15% latency reduction vs DDQN and 1.71% vs FL-DDPG, Oracle 123.310 ms.
+- Conservative conclusion: demonstrates a balanced federated offloading and
+  allocation pipeline under synthetic edge-cloud stress traces.
+
+Avoid:
+- "Real deployment proof"
+- "State of the art" unless backed by exact literature comparison and same
+  benchmark, which is not available.
+- "Dramatic improvement" over FL-DDPG.
+
+6.2 Keywords
+
+Suggested keywords:
+- federated reinforcement learning
+- double deep Q-network
+- task offloading
+- edge-cloud computing
+- Internet of Things
+- resource allocation
+- quality of service
+- channel-aware scheduling
+
+6.3 Introduction
+
+Suggested flow:
+1. Edge-cloud IoT systems must decide whether tasks should execute near devices
+   or in cloud infrastructure.
+2. Static policies are weak under dynamic radio/channel quality, queue pressure,
+   edge failure, and cloud maintenance.
+3. Centralized RL can learn policies but may not represent distributed edge
+   zones or privacy-aligned training needs.
+4. Federated RL is attractive, but offloading policies need careful reward
+   design because naive edge usage can overload edge nodes or reject infeasible
+   tasks.
+5. This paper proposes Fed-DDQN with channel-aware and rejection-aware design.
+6. The second stage refines resource shares for tasks already selected for edge.
+7. Contributions list.
+
+Evidence to cite in intro:
+- Use references on MEC/edge computing, IoT offloading, deep reinforcement
+  learning, DDQN, federated learning, federated reinforcement learning, and
+  resource allocation.
+- Use the local 40-reference bundle as starting bibliography.
+
+6.4 Related Work
+
+Organize into subsections:
+1. Task offloading in mobile edge and cloud-edge systems.
+2. Reinforcement learning for offloading and scheduling.
+3. Federated learning and federated reinforcement learning for edge systems.
+4. Resource allocation and QoS-aware scheduling.
+5. Gap summary.
+
+Gap statement:
+Prior work often treats offloading, channel dynamics, rejection handling, and
+post-offloading resource allocation separately. This work combines a
+federated DDQN offloading policy with rejection-aware evaluation and a second
+stage resource allocator on a controlled synthetic benchmark.
+
+Reference strategy:
+- Do not invent citation claims.
+- Use 40_references.bib and add citations only where the paper actually
+  supports the sentence.
+- If a cited paper is only similar but not exactly the same, phrase as
+  "related to" or "motivated by" rather than "solves".
+
+6.5 System Model and Problem Formulation
+
+Subsections:
+1. Edge-cloud IoT architecture
+2. Task model
+3. Edge node model
+4. Cloud node model
+5. Network/channel model
+6. Latency model
+7. SLA and rejection model
+8. Optimization objective
+
+Key definitions:
+- Task tuple: task id, device id, task type, size, CPU cycles, memory, deadline,
+  priority, security flag, energy/battery features, arrival time, assigned edge.
+- Edge state: CPU/memory availability, queue, energy, failure/degradation state.
+- Network state: bandwidth, delay, SNR, packet loss, congestion/outage/jitter.
+- Cloud state: queue, latency, maintenance, cold start, available capacity.
+
+Optimization objective:
+Minimize expected latency, SLA miss, rejection, and inefficient resource use
+while deciding action a_t in {edge, cloud} and later resource shares for edge
+tasks.
+
+Important caveat:
+Dataset3 approximates race/contestion effects through precomputed temporal
+state and arrival pressure. It is not a live simulator where multiple policies
+mutate shared state during execution.
+
+6.6 Proposed Methodology
+
+Subsections:
+1. Overview of the two-stage pipeline.
+2. Feature construction and rejection-safe label generation.
+3. Fed-DDQN state, action, reward, and transition design.
+4. Federated zone training and aggregation.
+5. Validation checkpointing and early stopping.
+6. Baseline methods and Oracle ceiling.
+7. Stage-2 rejection-aware residual resource allocation.
+
+Fed-DDQN details:
+- Q network: dueling DDQN architecture from v6.6.
+- Federated zones: industrial, rural, suburban, urban.
+- Local training on zone-local environments.
+- Weighted FedAvg aggregation.
+- Light FedProx regularization.
+- Soft target update.
+- Huber TD loss.
+- Replay buffer, with prioritized replay available as ablation rather than
+  default proposed configuration.
+- Main v6.6 MAX_STEPS is 6000. Do not use older planned 8000 unless the
+  notebook is explicitly changed and rerun.
+
+Reward discussion:
+Explain the reward in plain language and equations:
+- penalizes latency
+- penalizes SLA miss
+- penalizes rejection
+- penalizes edge overuse / pressure
+- includes channel and heavy-task awareness
+- balances edge use instead of pushing all tasks to edge
+
+Stage-2 allocator:
+- Fed-DDQN first decides edge vs cloud.
+- For edge-selected tasks, start from demand-proportional allocation.
+- Predict residual corrections with a neural ResourceAllocator.
+- Apply deadline, priority, SLA-risk, and rejection-aware projection.
+- Apply post-prediction capacity normalization so total assigned resources do
+  not violate node capacity.
+
+6.7 Experimental Setup
+
+Subsections:
+1. Dataset and preprocessing.
+2. Temporal train/validation/test split.
+3. Baselines.
+4. Hyperparameters.
+5. Evaluation metrics.
+6. Implementation and caching.
+
+Dataset3:
+- 100000 tasks.
+- 50 edge nodes.
+- 10 cloud nodes.
+- 1000 timesteps.
+- 5000 devices.
+- CSV schemas match Datasets2, no schema changes.
+- Six main CSVs:
+  - dataset3/dataset_A.csv
+  - dataset3/edge_nodes.csv
+  - dataset3/edge_state.csv
+  - dataset3/network_state.csv
+  - dataset3/cloud_nodes.csv
+  - dataset3/cloud_state.csv
+- Additional files:
+  - dataset3/code.py
+  - dataset3/README_dataset3.txt
+  - dataset3/test_dataset3_generator.py
+
+Dataset realism features:
+- normal traffic phases
+- morning/evening bursts
+- emergency bursts
+- firmware rollout windows
+- industrial telemetry surges
+- AI/video-heavy periods
+- regional outage, congestion, jitter storms
+- edge failures/degradation and recovery
+- cloud maintenance, overload, and cold starts
+- temporal queue carryover
+- arrival-pressure effects on edge, network, and cloud state
+
+Split:
+- Train: arrival_time <= 700
+- Gap 1: 701 to 715 ignored
+- Validation: 716 to 850
+- Gap 2: 851 to 865 ignored
+- Test: 866 to 1000
+- StandardScaler fit only on train.
+- Final comparison uses only test split.
+- Validation is used only for checkpoint selection.
+- Test is never used for tuning.
+
+Baselines:
+- DDQN
+- MTOSA
+- FL-DDPG
+- GTPSO
+- PTS-RA
+- JTOS
+- Fed-DDQN (Proposed)
+- Oracle ceiling
+
+Metrics:
+- average latency
+- SLA compliance
+- SLA miss
+- rejection rate
+- edge usage
+- communication delay
+- bandwidth allocation
+- validation score
+- per-task-type policy behavior
+- scenario-wise robustness
+- allocator MAE, under-allocation, waste, capacity violation, estimated SLA
+  risk, and efficiency score
+
+6.8 Results
+
+Suggested order:
+1. Main test-only comparison table.
+2. Latency/SLA/rejection comparison figure.
+3. Policy edge/cloud distribution and Oracle agreement.
+4. Task-type behavior.
+5. Scenario-wise analysis.
+6. Multi-seed stability.
+7. Ablation study.
+8. Stage-2 allocator evaluation.
+9. Summary of key findings.
+
+Main result language:
+"Fed-DDQN achieved 136.009 ms average latency on the held-out test split,
+compared with 144.926 ms for DDQN and 138.373 ms for FL-DDPG. This corresponds
+to a 6.15% latency reduction over DDQN and a 1.71% reduction over FL-DDPG, while
+maintaining 97.73% SLA compliance and 3.68% rejection."
+
+Oracle language:
+"Oracle achieved 123.310 ms and represents a non-trainable upper-bound policy
+computed from the available label/latency information; it is included only as a
+ceiling."
+
+Ablation language:
+"The ablation study shows small latency differences across some variants, but
+the proposed configuration maintains a balanced trade-off between validation
+score, latency, SLA, rejection, and edge-use behavior."
+
+Allocator language:
+"For Fed-DDQN edge-selected tasks, the residual allocator reduced overall MAE
+from 0.0509 for demand-only allocation to 0.0215. The full residual plus risk
+projection variant achieved the best composite allocation efficiency while
+maintaining zero capacity violation."
+
+6.9 Discussion
+
+Discuss:
+- Why improvements over heuristic/metaheuristic baselines are larger.
+- Why margin over FL-DDPG is modest.
+- Why Fed-DDQN is still useful: discrete action formulation, stable
+  validation-selected policy, non-IID zone training, strong SLA/rejection
+  behavior, interpretable edge/cloud decisions.
+- Why Oracle remains lower latency: it uses hindsight/label information.
+- How Dataset3 stress events affect policy decisions.
+- Why the second-stage allocator matters even after offloading is decided.
+
+Careful phrasing:
+- "The method improves the current controlled benchmark results" rather than
+  "guarantees deployment superiority."
+- "Federated training structure is privacy-aligned" rather than "privacy is
+  proven", unless formal privacy mechanisms are added.
+
+6.10 Limitations
+
+Must include:
+- Dataset3 is synthetic, not measured production trace data.
+- Race conditions are approximated through precomputed contention effects, not
+  a live multi-agent simulator with mutable state.
+- Only three seeds are currently verified for multi-seed reporting.
+- Baselines are implemented literature-style comparators in the same notebook;
+  they may not exactly reproduce all original papers.
+- Hyperparameter search is limited.
+- Security/privacy is architectural/federated, not formally differentially
+  private.
+- Resource allocation is evaluated after Fed-DDQN edge selection and does not
+  feed back into live offloading decisions in the current notebook.
+
+6.11 Conclusion
+
+Conclude:
+- Fed-DDQN provides a balanced offloading policy for edge-cloud IoT under
+  channel and resource stress.
+- It improves latency over implemented trainable baselines on the held-out test
+  split while maintaining strong SLA and rejection behavior.
+- The resource allocator improves second-stage resource assignment quality.
+- Future work should include real traces, live simulation with mutable queues,
+  stronger privacy mechanisms, broader baseline reproduction, and online
+  adaptation.
+
+6.12 Declarations
+
+Data availability:
+- Dataset3 is synthetic and generated locally by dataset3/code.py.
+- If submitted, include dataset/code availability statement depending on what
+  the user wants to release.
+
+Code availability:
+- v6.6.ipynb contains the experimental implementation.
+- If public release is not ready, state code is available from the corresponding
+  author upon reasonable request, if allowed by the target journal.
+
+Ethics:
+- No human participants, no clinical data, no animal data.
+
+Competing interests:
+- Use "The authors declare no competing interests" unless user provides a
+  different statement.
+
+Funding:
+- Placeholder until user gives funding status.
+
+Author contributions:
+- Placeholder until user gives final author list and roles.
+
+================================================================================
+7. TABLE PLAN
+================================================================================
+
+Table 1: Dataset3 file/schema summary
+- Columns: file, rows, columns, role, key state variables.
+- Include all six CSVs.
+- Mention schema compatibility with Datasets2.
+
+Table 2: Notation table
+- Include symbols for task, edge node, cloud node, channel state, action, reward,
+  latency, deadline, SLA, rejection flag, queue, CPU, memory, bandwidth, and
+  allocation vector.
+
+Table 3: Feature set used by learning models
+- Group by task, edge, network, cloud, QoS/risk, and derived features.
+- State that v6.6 uses 30 engineered features for offloading.
+
+Table 4: Hyperparameters
+- MAX_STEPS = 6000 for current saved v6.6.
+- Seeds = 42, 77, 123 for verified multi-seed.
+- Federated rounds, patience, FedProx value, target update tau, replay size,
+  batch size, learning rates, validation score weights.
+- Pull exact values from v6.6 source when writing final LaTeX.
+
+Table 5: Baseline methods
+- DDQN, MTOSA, FL-DDPG, GTPSO, PTS-RA, JTOS, Oracle.
+- Explain each in one or two lines.
+- Oracle labelled non-trainable ceiling.
+
+Table 6: Main comparison table
+- Use v6.6 Cell 34 values.
+- Columns: method, average latency, SLA, SLA miss, rejection, edge usage,
+  communication delay, bandwidth allocation.
+
+Table 7: Multi-seed summary
+- Proposed Fed-DDQN and ablation variants.
+- Include mean +/- std.
+- Note three seeds.
+
+Table 8: Scenario/edge-case behavior table
+- Emergency, firmware, corrupt, low-battery, impossible deadline,
+  dependencies, encrypted, real-time.
+- Include edge/cloud/rejection/SLA violation values where available.
+
+Table 9: Allocator comparison table
+- Equal, Demand-Proportional, Priority-Weighted, Deadline-Aware,
+  Rejection-Aware Demand, Residual Raw, Residual + Capacity Norm,
+  Residual + Risk Projection.
+- Include MAE, under, waste, capacity violation, estimated SLA risk, efficiency.
+
+Table 10: Claims-to-evidence table
+- Optional but useful for paper clarity.
+- Columns: claim, evidence table/figure, source cell/file, limitation.
+
+================================================================================
+8. FIGURE PLAN
+================================================================================
+
+Use selected high-resolution figures in the main paper. Do not include all 171
+exports in the main manuscript. Put additional figures in supplementary material.
+
+Recommended main figures:
+
+Figure 1: System architecture
+- Source: Figures/150_fig_a1_system_architecture.png
+- Purpose: show IoT devices, edge zones, cloud, Fed-DDQN, and resource allocator.
+
+Figure 2: Experimental methodology / temporal split
+- Preferred source: Figures/169_fig_a22_experimental_methodology_flowchart.png
+- Alternative/additional: Figures/151_fig_a2_temporal_split_protocol.png
+- Purpose: show train/gap/validation/gap/test and no test leakage.
+
+Figure 3: Dataset3 workload and network timeline
+- Source: Figures/166_fig_a19_dataset3_workload_network_timeline.png
+- Purpose: show bursts and network events.
+
+Figure 4: Main latency improvement over baselines
+- Source: Figures/153_fig_a4_fed_ddqn_latency_improvement.png
+- Purpose: communicate main offloading result.
+
+Figure 5: Multi-objective policy scorecard or trade-off bubble
+- Source: Figures/163_fig_a14_policy_multiobjective_scorecard.png
+- Alternative: Figures/152_fig_a3_policy_tradeoff_bubble.png
+- Purpose: show latency/SLA/rejection/edge-use tradeoff.
+
+Figure 6: Fed-DDQN learning dynamics
+- Source: Figures/162_fig_a13_fed_ddqn_learning_dynamics.png
+- Purpose: show training/validation behavior and best validation round.
+
+Figure 7: Fed-DDQN versus Oracle agreement matrix
+- Source: Figures/164_fig_a15_fed_oracle_agreement_matrix.png
+- Purpose: show learned policy closeness to Oracle.
+
+Figure 8: Scenario latency heatmap
+- Source: Figures/155_fig_a6_scenario_latency_heatmap.png
+- Purpose: show behavior under workload classes or stress settings.
+
+Figure 9: Multi-seed ablation latency confidence intervals
+- Source: Figures/156_fig_a7_multiseed_ablation_latency_ci.png
+- Purpose: support ablation/stability analysis.
+
+Figure 10: Stage-2 allocator pipeline
+- Source: Figures/161_fig_a12_stage2_allocator_pipeline.png
+- Purpose: explain resource allocation model.
+
+Figure 11: Allocator QoS tradeoff
+- Source: Figures/157_fig_a8_allocator_qos_tradeoff.png
+- Purpose: compare allocation methods.
+
+Figure 12: Allocator error CDF or under-vs-excess profile
+- Source: Figures/167_fig_a20_allocator_resource_error_cdf.png
+- Alternative: Figures/168_fig_a21_allocator_under_vs_excess_profile.png
+- Purpose: show resource allocation quality distribution.
+
+Recommended supplementary figures:
+- Figures/154_fig_a5_policy_action_distribution.png
+- Figures/158_fig_a9_allocator_target_vs_assigned_distribution.png
+- Figures/159_fig_a10_stage2_edge_selected_task_mix.png
+- Figures/160_fig_a11_allocator_ablation_efficiency.png
+- Figures/165_fig_a18_edge_queue_pressure_response.png
+- Figures/170_fig_a23_research_claim_evidence_map.png
+- Figures/171_fig_a24_compact_policy_metric_table.png
+- Selected notebook output images from cells 34, 40, 42, 44, 48, 56, 58, 62,
+  66, and 70 if needed as audit/supplementary evidence.
+
+Figure quality rules:
+- Use high-resolution PNGs already exported under Figures.
+- Avoid clustered figures in main paper if text becomes unreadable.
+- Each figure caption should explain what is being compared, what split is used,
+  and why the figure matters.
+- Do not use figures whose text overlaps or is unreadable.
+
+================================================================================
+9. EQUATION PLAN
+================================================================================
+
+Equation group 1: Task and state definitions
+- Task i: tau_i = (d_i, k_i, s_i, c_i, m_i, deadline_i, priority_i, arrival_i)
+- Edge state e_j(t): CPU, memory, queue, energy, failure/degradation.
+- Network state n(t): bandwidth, delay, SNR, packet loss, event flags.
+- Cloud state c_l(t): queue, latency, capacity, maintenance/cold-start.
+
+Equation group 2: Latency model
+- Edge latency = transmission/access delay + queue delay + execution delay.
+- Cloud latency = uplink/core network delay + cloud queue + cloud execution.
+- Use notation consistent with compute_latency() in v6.6.
+
+Equation group 3: SLA and rejection
+- SLA_i = 1 if selected latency <= deadline_i else 0.
+- Rejection flag = 1 for infeasible/impossible/risky cases as defined by the
+  notebook labels.
+- Be careful: rejection_flag is a label/risk construct, not always a literal
+  runtime rejected packet.
+
+Equation group 4: MDP
+- State s_t = feature vector from task, edge, network, cloud, and QoS features.
+- Action a_t in {edge, cloud}.
+- Reward r_t penalizes latency, SLA miss, rejection, overload, and poor channel
+  choices.
+
+Equation group 5: DDQN target
+- y_t = r_t + gamma Q_target(s_{t+1}, argmax_a Q_online(s_{t+1}, a)).
+
+Equation group 6: Federated aggregation
+- theta_global = sum_z (n_z / sum_z n_z) theta_z.
+- Add FedProx regularization: mu/2 ||theta_z - theta_global||^2.
+
+Equation group 7: Validation score
+- val_score = avg_latency + 5.0 * SLA_miss_percent + 2.5 * rejection_percent.
+
+Equation group 8: Stage-2 allocation
+- base allocation = demand-proportional CPU/memory/bandwidth vector.
+- residual correction = neural allocator output.
+- risk projection = adjustment based on deadline, priority, SLA risk, and
+  rejection-aware features.
+- normalized allocation = projection onto capacity-feasible resource vector.
+
+Equation group 9: Metrics
+- average latency
+- SLA compliance
+- rejection rate
+- edge usage
+- allocator MAE
+- under-allocation
+- resource waste
+- capacity violation
+- efficiency score
+
+================================================================================
+10. ALGORITHM PLAN
+================================================================================
+
+Algorithm 1: Dataset and feature construction
+Inputs:
+- Dataset3 CSVs.
+Outputs:
+- features, labels, rejection flags, temporal splits.
+Steps:
+1. Load Dataset3 CSVs.
+2. Build lookup indexes.
+3. Compute edge/cloud latency safely.
+4. Generate offload labels and rejection flags.
+5. Engineer 30 features.
+6. Apply purged temporal train/validation/test split.
+7. Fit scaler on train only.
+
+Algorithm 2: Zone-aware Fed-DDQN training
+Inputs:
+- train split, validation split, zone mapping, Fed-DDQN hyperparameters.
+Outputs:
+- best global Fed-DDQN checkpoint.
+Steps:
+1. Partition train tasks by edge zone.
+2. Initialize global Q network and target network.
+3. For each federated round, copy global weights to local clients.
+4. Train local DDQN agents on zone-specific environments.
+5. Apply DDQN target and FedProx regularization.
+6. Aggregate local weights by weighted FedAvg.
+7. Evaluate global policy on validation split.
+8. Save best checkpoint and early-stop after patience.
+
+Algorithm 3: Test-only policy evaluation
+Inputs:
+- best Fed-DDQN, trained baselines, Oracle labels, test split.
+Outputs:
+- df_compare and scenario tables.
+Steps:
+1. Run each policy on test split only.
+2. Compute latency, SLA, rejection, edge usage, communication delay.
+3. Compare trainable policies and Oracle ceiling.
+4. Generate per-task-type and scenario-wise summaries.
+
+Algorithm 4: Rejection-aware residual resource allocator
+Inputs:
+- Fed-DDQN edge-selected test tasks and resource targets.
+Outputs:
+- CPU/memory/bandwidth allocations and allocator metrics.
+Steps:
+1. Build demand-proportional base allocation.
+2. Train residual neural allocator.
+3. Apply deadline/priority/SLA-risk correction.
+4. Normalize allocations to capacity constraints.
+5. Compare against allocator baselines.
+6. Report MAE, under-allocation, waste, capacity violation, risk, efficiency.
+
+================================================================================
+11. REFERENCE PLAN
+================================================================================
+
+Available reference bundle:
+- Paper_LATEX/40 refernces/40_references.bib
+- Paper_LATEX/40 refernces/40_references.csv
+- Paper_LATEX/40 refernces/40_references.pdf
+- Paper_LATEX/40 refernces/40_references.tex
+
+Use these as the starting bibliography. Before final submission:
+1. Inspect 40_references.csv for titles, venues, years, DOIs/URLs.
+2. Confirm each BibTeX key is unique and compiles.
+3. Use numeric citation style for Springer Nature / Scientific Reports unless
+   the final template demands another style.
+4. Do not cite references just to increase count.
+5. Map references to related-work paragraphs:
+   - edge/cloud/MEC offloading
+   - IoT scheduling
+   - reinforcement learning for offloading
+   - DDQN and deep RL foundations
+   - federated learning foundations
+   - federated RL / edge intelligence
+   - resource allocation and QoS
+   - benchmark/synthetic workload or network modelling
+
+Possible final bibliography workflow:
+- Copy or import 40_references.bib into Paper_LATEX/references.bib.
+- If using sn-jnl, use the bibliography command expected by the template.
+- If using fallback article class, use natbib or plain numeric style only as a
+  temporary compile route.
+
+================================================================================
+12. LATEX PROJECT BUILD PLAN
+================================================================================
+
+Target final folder:
+C:\Users\mayan\Desktop\3STSEM\ai\model\Paper_LATEX
+
+Recommended file structure:
+
+Paper_LATEX/
+  main.tex
+  main_submission.tex
+  references.bib
+  README_BUILD.md
+  README_submission_checklist.txt
+  compile_log_notes.txt
+  cover_letter.txt
+  sections/
+    00_abstract.tex
+    01_introduction.tex
+    02_related_work.tex
+    03_system_model.tex
+    04_methodology.tex
+    05_experimental_setup.tex
+    06_results.tex
+    07_discussion.tex
+    08_limitations.tex
+    09_conclusion.tex
+    10_declarations.tex
+  tables/
+    table_dataset_schema.tex
+    table_notation.tex
+    table_features.tex
+    table_hyperparameters.tex
+    table_baselines.tex
+    table_main_results.tex
+    table_multiseed_ablation.tex
+    table_scenarios.tex
+    table_allocator.tex
+  figures/
+    selected copies or references to ../Figures/*.png
+  supplementary/
+    supplementary.tex
+    supplementary_figures.tex
+    supplementary_tables.tex
+
+Template plan:
+- If an official Springer Nature / Scientific Reports LaTeX template is present
+  later, use it.
+- If no official template is available, create a compile-safe Springer-like
+  fallback manuscript and keep the section organization migration-ready.
+- The current ieee_access_template.docx is not the controlling template for this
+  plan because the instruction PDF asks for Springer Nature / Scientific
+  Reports style.
+
+Compilation:
+- Prefer a real compile pass after manuscript files are created.
+- On this Windows setup, direct LaTeX/tectonic invocation has been more reliable
+  in past project work than wrapper assumptions.
+- Save compile logs or notes to compile_log_notes.txt.
+
+================================================================================
+13. CLAIM SAFETY RULES
+================================================================================
+
+Do:
+- Use "proposed Fed-DDQN" consistently.
+- Use "implemented baselines" or "baseline implementations" when discussing
+  DDQN, MTOSA, FL-DDPG, GTPSO, PTS-RA, and JTOS.
+- State that Dataset3 is synthetic.
+- State final metrics are from held-out test split.
+- State validation was used only for checkpoint selection.
+- State Oracle is an upper-bound/ceiling.
+- Mention multi-seed uses three seeds.
+- Mention limitations openly.
+
+Do not:
+- Do not claim Dataset3 is measured real-world data.
+- Do not claim the model is deployment-proven.
+- Do not mix old v6.2/v6.3/v6.5 numbers with current v6.6 results.
+- Do not use MAX_STEPS = 8000 unless v6.6 is changed and rerun. Current saved
+  v6.6 uses MAX_STEPS = 6000.
+- Do not say Fed-DDQN dominates all ablations on every metric.
+- Do not imply formal privacy guarantees unless differential privacy or secure
+  aggregation is added and evaluated.
+- Do not claim exact reproduction of original baseline papers unless the
+  implementation is verified against those papers.
+
+================================================================================
+14. SUGGESTED MAIN PAPER STORYLINE
+================================================================================
+
+Narrative arc:
+1. Modern edge-cloud IoT systems need offloading policies that respond to
+   changing channel quality, workload bursts, and resource contention.
+2. Simple heuristics and centralized policies can be brittle or unrealistic in
+   distributed non-IID edge zones.
+3. The proposed Fed-DDQN treats offloading as a federated sequential decision
+   problem across zones.
+4. The reward and validation objective explicitly discourage low-latency choices
+   that cause rejection, SLA violation, or edge overuse.
+5. Dataset3 gives a controlled but stress-rich synthetic benchmark.
+6. On the held-out test split, Fed-DDQN is the best trainable offloading policy
+   in the implemented comparison, with a modest but important gain over FL-DDPG.
+7. Oracle shows remaining headroom.
+8. Stage 2 improves resource assignment for edge-selected tasks, making the
+   overall pipeline more complete for scheduling/resource-management research.
+9. The limitations motivate future work with real traces and live simulation.
+
+================================================================================
+15. PAPER WRITING ORDER
+================================================================================
+
+Recommended order to build the paper:
+
+1. Create LaTeX skeleton and compile a blank manuscript.
+2. Add title, abstract placeholder, and declarations placeholders.
+3. Build tables from verified v6.6 outputs.
+4. Copy/select main figures and verify they render.
+5. Write Experimental Setup first, because it anchors all claims.
+6. Write Results from exact tables/figures.
+7. Write Methodology with equations and algorithms.
+8. Write System Model and Problem Formulation.
+9. Write Related Work with verified references.
+10. Write Introduction and contribution list last, after claims are stable.
+11. Write Discussion, Limitations, Conclusion.
+12. Add final abstract.
+13. Compile and inspect PDF.
+14. Run consistency audit:
+    - all result numbers match v6.6
+    - all figures exist
+    - all citations compile
+    - no old notebook numbers remain
+    - Dataset3 described as synthetic
+    - Oracle described as ceiling
+    - author/declaration placeholders resolved
+
+================================================================================
+16. OPEN ITEMS / INFORMATION NEEDED FROM USER
+================================================================================
+
+Needed before final manuscript submission:
+1. Exact author names.
+2. Exact affiliations.
+3. Corresponding author email.
+4. Target journal confirmation:
+   - Springer Nature Scientific Reports?
+   - another Springer Nature journal?
+   - IEEE Access instead?
+5. Funding statement.
+6. Author contribution roles.
+7. Data/code release preference:
+   - public repository
+   - available on request
+   - not publicly available due to project constraints
+8. Whether to include all 40 references or only the strongest relevant subset.
+9. Whether the final paper should include supplementary material.
+
+Potential technical checks before final writing:
+1. Re-open v6.6.ipynb and export exact hyperparameters from source cells.
+2. Validate Figures/_export_index.csv against actual image files.
+3. Inspect 40_references.bib for broken entries or missing URLs/DOIs.
+4. If final target is Springer, obtain or recreate an official Springer
+   compatible LaTeX class/template.
+5. Confirm whether the latest v6.6 saved outputs still match the numbers in
+   this plan.
+
+================================================================================
+17. FINAL DELIVERABLE PLAN
+================================================================================
+
+The final paper work should produce:
+
+1. main.tex
+2. main_submission.tex
+3. compiled PDF
+4. references.bib
+5. section files
+6. table files
+7. selected figure files or figure references
+8. supplementary material if used
+9. cover_letter.txt
+10. README_BUILD.md
+11. README_submission_checklist.txt
+12. compile_log_notes.txt
+
+Quality target:
+- The manuscript should be scientifically restrained, reproducible from v6.6
+  outputs, honest about Dataset3 being synthetic, and clear that Fed-DDQN is the
+  proposed primary method while the allocator is the second-stage resource
+  management component.
+
+================================================================================
+2026-05-30 DUAL-VENUE BUILD IMPLEMENTATION RECORD
+================================================================================
+
+Created/updated:
+- `Paper_LATEX/shared/canonical_metrics.tex`
+- `Paper_LATEX/shared/canonical_claims.md`
+- `Paper_LATEX/shared/figure_table_map.csv`
+- `Paper_LATEX/shared/reference_map.csv`
+- `Paper_LATEX/shared/sync_ledger.md`
+- `Paper_LATEX/scientific_reports`
+- `Paper_LATEX/ieee_access`
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Generated dual venue drafts from shared canonical metrics and claims | `scientific_reports/main.tex` | `ieee_access/main.tex` | Generated, pending compile verification |
+
+Rules for future edits:
+- Update shared macros first when metrics change.
+- Update both venue branches in the same turn when scientific content changes.
+- Update this plan and `shared/sync_ledger.md` after every manuscript edit.
+
+Final compile verification for this implementation:
+- `Paper_LATEX/scientific_reports/main.pdf` compiled with bundled Tectonic.
+- `Paper_LATEX/scientific_reports/main_submission.pdf` compiled with bundled
+  Tectonic.
+- `Paper_LATEX/scientific_reports/supplementary/supplementary.pdf` compiled
+  with bundled Tectonic.
+- `Paper_LATEX/ieee_access/main.pdf` compiled with bundled Tectonic and
+  `IEEEtran.bst`.
+- Scientific Reports abstract word count: 141 words, within the 200-word
+  Scientific Reports target.
+- Scientific Reports keywords: six.
+- IEEE Access branch includes Abstract, Index Terms, IEEE-style title metadata,
+  modular sections, appendix, BibTeX references, and author-biography
+  placeholders.
+- Remaining warnings are layout/template warnings only: Fontconfig warning in
+  the local Tectonic environment, underfull boxes, and one long Scientific
+  Reports reference URL overfull warning. No fatal LaTeX errors remain.
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Compiled dual venue drafts and normalized IEEE bibliography/tables | `scientific_reports/main_submission.pdf` | `ieee_access/main.pdf` | Compiled and synchronized |
+
+================================================================================
+2026-05-30 IEEE ACCESS FIRST EXPANSION PLAN
+================================================================================
+
+User direction:
+- Focus on IEEE Access first.
+- Scientific Reports will be produced later from the stronger IEEE manuscript.
+- Target a 20-22 page actual IEEE Access-style working draft.
+- Use the available figures in:
+  `C:\Users\mayan\Desktop\3STSEM\ai\model\Figures`
+- Use `type1_REFERENCEsample .pdf` and `type2_REFERENCEsample.pdf` as
+  structural density references only. Do not copy their wording.
+
+Important venue correction:
+- The earlier plan temporarily treated Scientific Reports as the active style.
+  The active target is now IEEE Access because the user explicitly switched
+  venue focus.
+- The Scientific Reports branch remains useful but is deferred until the IEEE
+  Access draft is mature.
+
+IEEE Access page-length note:
+- IEEE Access has no strict page limit, but its author guidelines strongly
+  recommend keeping articles under 20 pages for readability.
+- Therefore the local goal is a 20-22 page working draft, followed by a final
+  compression gate: either reduce the official-template main article to about
+  20 pages or prepare a pre-submission inquiry rationale if keeping more than
+  20 pages is necessary.
+
+Dedicated plan file created:
+- `Paper_LATEX/ieee_access_20_22_page_plan.md`
+
+Current IEEE baseline:
+- `Paper_LATEX/ieee_access/main.pdf` currently compiles to 10 pages.
+- Existing section files are short skeletons and need expansion into a full
+  engineering research manuscript.
+
+Reference-sample lessons:
+- The two local reference papers are both 22 pages and follow a dense
+  engineering pattern: Abstract, Introduction, Literature Survey/Related Work,
+  System Model and Problem Formulation, Proposed Methodology, Experimental
+  Evaluation, Performance Indicators, comparison with state-of-the-art methods,
+  and Conclusion.
+- For this project, the equivalent structure should be:
+  1. Abstract and Index Terms.
+  2. Introduction.
+  3. Related Work.
+  4. System Model and Problem Formulation.
+  5. Dataset3 and Feature Engineering.
+  6. Proposed Fed-DDQN Offloading Framework.
+  7. Rejection-Aware Stage-2 Resource Allocation.
+  8. Experimental Setup.
+  9. Results and Discussion.
+  10. Limitations and Threats to Validity.
+  11. Conclusion.
+  12. Appendix, references, and biographies.
+
+Planned file expansion:
+- Create `Paper_LATEX/ieee_access/sections/system_model.tex`.
+- Create `Paper_LATEX/ieee_access/sections/proposed_fed_ddqn.tex`.
+- Create `Paper_LATEX/ieee_access/sections/stage2_allocator.tex`.
+- Create `Paper_LATEX/ieee_access/algorithms/`.
+- Add algorithm files for Fed-DDQN training, validation checkpointing, and
+  Stage-2 allocation.
+- Add editable LaTeX tables for related-work taxonomy, notation, reward terms,
+  and evaluation metrics.
+- Expand the existing Introduction, Related Work, Dataset, Experimental Setup,
+  Results, Limitations, and Conclusion files.
+
+Main figures planned for the IEEE draft:
+- `150_fig_a1_system_architecture.png`
+- `169_fig_a22_experimental_methodology_flowchart.png`
+- `166_fig_a19_dataset3_workload_network_timeline.png`
+- `151_fig_a2_temporal_split_protocol.png`
+- `153_fig_a4_fed_ddqn_latency_improvement.png`
+- `163_fig_a14_policy_multiobjective_scorecard.png`
+- `155_fig_a6_scenario_latency_heatmap.png`
+- `156_fig_a7_multiseed_ablation_latency_ci.png`
+- `162_fig_a13_fed_ddqn_learning_dynamics.png`
+- `164_fig_a15_fed_oracle_agreement_matrix.png`
+- `161_fig_a12_stage2_allocator_pipeline.png`
+- `157_fig_a8_allocator_qos_tradeoff.png`
+- `167_fig_a20_allocator_resource_error_cdf.png`
+- `168_fig_a21_allocator_under_vs_excess_profile.png`
+
+Reserve/appendix figures:
+- `154_fig_a5_policy_action_distribution.png`
+- `152_fig_a3_policy_tradeoff_bubble.png`
+- `165_fig_a18_edge_queue_pressure_response.png`
+- `170_fig_a23_research_claim_evidence_map.png`
+- `171_fig_a24_compact_policy_metric_table.png`
+
+Writing discipline:
+- Use exact v6.6 metrics from `shared/canonical_metrics.tex` and context.
+- Keep Fed-DDQN as the proposed Stage-1 model.
+- Keep Stage 2 as a post-offloading allocator for edge-selected tasks.
+- Dataset3 is realistic synthetic, not measured telemetry.
+- Oracle is a ceiling, not a deployable baseline.
+- The FL-DDPG gain is modest and must be written honestly.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Created IEEE-first 20-22 page expansion plan | Deferred until IEEE draft stabilizes | `ieee_access_20_22_page_plan.md` | IEEE-first planning |
+
+================================================================================
+2026-05-30 IEEE ACCESS 20-PAGE BUILD IMPLEMENTATION RECORD
+================================================================================
+
+Implementation summary:
+- Expanded the IEEE Access branch from the earlier short scaffold into a
+  20-page working draft.
+- Kept Scientific Reports deferred until the IEEE manuscript stabilizes.
+- Preserved the same canonical project claims: Fed-DDQN is the proposed
+  Stage-1 offloading method; baselines are comparison methods; Oracle is only a
+  non-deployable ceiling; Dataset3 is realistic synthetic data; Stage 2 is a
+  rejection-aware residual resource allocator for edge-selected tasks.
+
+Major IEEE files updated:
+- `Paper_LATEX/ieee_access/main.tex`
+- `Paper_LATEX/ieee_access/sections/abstract_keywords.tex`
+- `Paper_LATEX/ieee_access/sections/introduction.tex`
+- `Paper_LATEX/ieee_access/sections/related_work.tex`
+- `Paper_LATEX/ieee_access/sections/system_model.tex`
+- `Paper_LATEX/ieee_access/sections/dataset.tex`
+- `Paper_LATEX/ieee_access/sections/proposed_fed_ddqn.tex`
+- `Paper_LATEX/ieee_access/sections/stage2_allocator.tex`
+- `Paper_LATEX/ieee_access/sections/experimental_setup.tex`
+- `Paper_LATEX/ieee_access/sections/results_discussion.tex`
+- `Paper_LATEX/ieee_access/sections/limitations.tex`
+- `Paper_LATEX/ieee_access/sections/conclusion.tex`
+- `Paper_LATEX/ieee_access/sections/appendix.tex`
+- `Paper_LATEX/ieee_access/COMPILE_NOTES.md`
+
+New IEEE support files:
+- `Paper_LATEX/ieee_access/sections/system_model.tex`
+- `Paper_LATEX/ieee_access/sections/proposed_fed_ddqn.tex`
+- `Paper_LATEX/ieee_access/sections/stage2_allocator.tex`
+- `Paper_LATEX/ieee_access/algorithms/fed_ddqn_training.tex`
+- `Paper_LATEX/ieee_access/algorithms/fedavg_checkpointing.tex`
+- `Paper_LATEX/ieee_access/algorithms/stage2_allocator.tex`
+- `Paper_LATEX/ieee_access/tables/problem_notation.tex`
+- `Paper_LATEX/ieee_access/tables/related_work_taxonomy.tex`
+- `Paper_LATEX/ieee_access/tables/reward_terms.tex`
+- `Paper_LATEX/ieee_access/tables/evaluation_metrics.tex`
+
+Newly copied/used appendix and diagnostic figures:
+- `figures/results/152_fig_a3_policy_tradeoff_bubble.png`
+- `figures/results/154_fig_a5_policy_action_distribution.png`
+- `figures/diagnostics/158_fig_a9_allocator_target_vs_assigned_distribution.png`
+- `figures/diagnostics/159_fig_a10_stage2_edge_selected_task_mix.png`
+- `figures/diagnostics/160_fig_a11_allocator_ablation_efficiency.png`
+- `figures/diagnostics/165_fig_a18_edge_queue_pressure_response.png`
+- `figures/diagnostics/170_fig_a23_research_claim_evidence_map.png`
+- `figures/diagnostics/171_fig_a24_compact_policy_metric_table.png`
+
+Build verification:
+- Direct bundled Tectonic build succeeded for:
+  `Paper_LATEX/ieee_access/main.tex`
+- Current output:
+  `Paper_LATEX/ieee_access/main.pdf`
+- Current page count: 20 pages.
+- Final scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing included figures, or overfull-box matches.
+- PDF text contains the canonical result values: 136.009 ms Fed-DDQN latency,
+  97.73% SLA, 3.68% rejection, 67.43% edge usage, 144.926 ms DDQN latency,
+  138.373 ms FL-DDPG latency, and 123.310 ms Oracle latency.
+
+Remaining notes:
+- The build still uses the local `ieeeaccess.cls` compatibility wrapper.
+  Official IEEE Access template migration is still required before submission.
+- Remaining warnings are non-fatal underfull boxes and the local Fontconfig
+  warning from the bundled Tectonic environment.
+- Author affiliations, emails, funding, ORCID IDs, and repository links are
+  intentionally not invented and must be filled by the author.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Implemented expanded IEEE Access 20-page working draft | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-05-30 IEEE ACCESS PUBLICATION-TONE CLEANUP
+================================================================================
+
+User direction:
+- Treat the IEEE Access manuscript as a publishable paper, not as an internal
+  project audit.
+- Avoid self-undermining wording such as "strongest defensible claim,"
+  "universally superior," "bounded claim," or "all results are synthetic."
+- Keep necessary scope and benchmark wording, but write it in normal academic
+  publication style.
+
+Files updated:
+- `Paper_LATEX/ieee_access/sections/abstract_keywords.tex`
+- `Paper_LATEX/ieee_access/sections/dataset.tex`
+- `Paper_LATEX/ieee_access/sections/related_work.tex`
+- `Paper_LATEX/ieee_access/sections/experimental_setup.tex`
+- `Paper_LATEX/ieee_access/sections/results_discussion.tex`
+- `Paper_LATEX/ieee_access/sections/limitations.tex`
+- `Paper_LATEX/ieee_access/COMPILE_NOTES.md`
+- `Paper_LATEX/shared/sync_ledger.md`
+
+Manuscript style rule going forward:
+- State results positively and directly.
+- Describe Dataset3 as a realistic synthetic benchmark without apologetic
+  phrasing.
+- Present Oracle as a non-trainable upper-bound reference.
+- Present limitations/scope as standard validity considerations, not as
+  reviewer-warning language.
+- Do not include internal commentary about what can or cannot be claimed unless
+  the journal text explicitly requires a scope statement.
+
+Verification:
+- Recompiled `Paper_LATEX/ieee_access/main.tex` with bundled Tectonic.
+- Current `main.pdf` remains 20 pages.
+- PDF text scan confirms the targeted defensive phrases no longer appear.
+- Final log scan found no fatal errors, undefined citations, undefined
+  references, missing figures, or overfull-box matches.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Cleaned IEEE manuscript tone for publication-style claims | Deferred until IEEE draft stabilizes | `ieee_access/sections/*.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-05-30 IEEE ACCESS ATTACHMENT ISSUE-FIX PASS
+================================================================================
+
+Trigger:
+- The user provided an attachment listing technical and manuscript-quality
+  issues in the IEEE Access draft and asked for a plan plus implementation.
+
+Issue-fix plan created:
+- `Paper_LATEX/ieee_access_issue_fix_plan.md`
+
+Implemented fixes:
+- Localized canonical metrics into:
+  `Paper_LATEX/ieee_access/macros/canonical_metrics.tex`
+  so the IEEE branch can compile without depending on `../shared`.
+- Updated `Paper_LATEX/ieee_access/main.tex` to load
+  `macros/canonical_metrics`, include `ref41`, use `\raggedbottom`, and apply
+  a small vertical warning tolerance for the drafting class.
+- Removed the stale unused notation table:
+  `Paper_LATEX/ieee_access/tables/notation.tex`
+- Updated the appendix label from `app:notation` to `app:diagnostics`.
+- Converted Markdown-style code backticks in LaTeX source to `\texttt{}`.
+- Corrected the system objective from a multiplicative expression to an
+  additive weighted cost over selected latency, SLA miss, realized rejection,
+  and edge-resource penalty.
+- Explicitly separated:
+  - realized rejection `R_i`
+  - pre-decision rejection-risk estimate `\hat{\rho}_i`
+- Clarified that Stage-1 training is an offline replay MDP over Dataset3:
+  actions affect reward/evaluation for the sampled task, while the next state
+  is the next exogenous precomputed row.
+- Added the exact 30-feature Stage-1 feature table and clarified that
+  label-generation outputs are not policy inputs.
+- Corrected the dueling-network citation to Wang et al., ICML/PMLR 2016, and
+  added the BibTeX entry as `ref41`.
+- Adjusted main-results wording so Fed-DDQN is described as best among the
+  main-results trainable baselines, while ablation variants remain diagnostic.
+- Added a multi-seed ablation table note explaining that values are three-seed
+  means and that standard deviations are shown only where exported.
+- Moved crowded allocator figures from main results to the appendix to preserve
+  the 20-page IEEE working draft quality.
+
+Verification:
+- Bundled Tectonic compilation succeeded for:
+  `Paper_LATEX/ieee_access/main.tex`
+- Current PDF:
+  `Paper_LATEX/ieee_access/main.pdf`
+- Current page count: 20 pages.
+- Final log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing included figures, or overfull-box matches.
+- Final source scan found no stale `../shared/canonical` include, stale
+  `app:notation` label, stale `tables/notation` include, or old main-claim
+  phrase.
+
+Remaining author-side items:
+- Author affiliations, emails, funding details, ORCID IDs, and repository links
+  remain placeholders because they were not supplied and should not be invented.
+- The IEEE branch still uses a local `ieeeaccess.cls` drafting wrapper; compare
+  with the official IEEE Access template before submission.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-30 | Fixed attachment-review issues in IEEE Access manuscript | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/*.tex`, `ieee_access/tables/*.tex`, `ieee_access/algorithms/*.tex`, `ieee_access/references.bib`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-05-31 IEEE ACCESS 22-PAGE FOCUSED REFERENCE REVISION
+================================================================================
+
+Trigger:
+- The user provided a second attachment review and asked to fix the listed
+  issues, reduce references to the 20 most relevant items, remove version-style
+  framing from the manuscript, make the draft deeper, use more formulas and
+  selected figures, and target 22 pages.
+
+Planning artifact:
+- `Paper_LATEX/ieee_access_revision_plan_2026-05-31.md`
+
+Implemented manuscript changes:
+- Reduced `Paper_LATEX/ieee_access/references.bib` from 41 entries to 20
+  focused, cited references.
+- Removed broad `\nocite` usage so the PDF reference list is driven by actual
+  manuscript citations.
+- Reframed `Dataset3` as `the benchmark dataset` in active manuscript macros
+  and paper text.
+- Removed active manuscript references to notebook version labels such as
+  `v6.x` and stale `dataset3` text.
+- Clarified notation:
+  - `M_i`: SLA-miss indicator.
+  - `F_i`: selected-path feasibility/admission failure.
+  - `R_i = I[M_i=1 or F_i=1]`: reported QoS rejection indicator.
+  - `\hat{\rho}_i`: pre-decision rejection-risk estimate.
+- Updated the validation score to include:
+  - average validation latency,
+  - SLA miss percentage,
+  - QoS rejection percentage,
+  - edge-overuse penalty above the 78% soft cap,
+  - heavy-task edge misuse penalty.
+- Added deeper formulas for:
+  - effective bandwidth,
+  - queue carryover,
+  - channel-aware Q-value decision margin,
+  - latency-margin intuition,
+  - capacity-normalized Stage-2 allocation.
+- Split the allocator comparison into two readable tables:
+  - allocator error/feasibility,
+  - allocator QoS/efficiency.
+- Added the task-type edge-share figure:
+  `ieee_access/figures/diagnostics/172_fig_a25_task_type_edge_share.png`
+- Added float barriers before the bibliography so appendix material does not
+  interleave with references.
+
+Verification:
+- Bundled Tectonic compilation succeeded for:
+  `Paper_LATEX/ieee_access/main.tex`
+- Current PDF:
+  `Paper_LATEX/ieee_access/main.pdf`
+- Current page count: 22 pages.
+- `main.bbl` contains exactly 20 bibliography items.
+- Final log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing included figures, emergency stops, or overfull-box
+  matches.
+- Active-source scan found no `v6.x`, `Dataset3`, stale `dataset3`, fake DOI,
+  or `example.com` references in the IEEE manuscript sources.
+
+Remaining author-side items:
+- Author affiliations, verified emails, ORCID IDs, funding text, repository or
+  data links, and final official IEEE Access production metadata still require
+  author-supplied information.
+- The IEEE branch still uses a local `ieeeaccess.cls` drafting wrapper; compare
+  or migrate to the official IEEE Access template before submission.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Revised IEEE draft to 22 pages with 20 focused references and deeper formulas/figures | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/*.tex`, `ieee_access/tables/*.tex`, `ieee_access/references.bib`, `ieee_access/main.pdf` | IEEE active branch compiled |
+| 2026-05-31 | Fixed sparse page 19--20 appendix formatting with in-place figures, compact SLA table, and explanatory figure/table text | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/appendix.tex`, `ieee_access/tables/sla_thresholds.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+| 2026-05-31 | Reduced page 19 figure spacing and filled page 20 by tightening appendix float spacing, using cropped diagnostic images, and adding a compact policy-metric reading-aid figure | Deferred until IEEE draft stabilizes | `ieee_access/sections/appendix.tex`, `ieee_access/figures/diagnostics/*_cropped.png`, `ieee_access/main.pdf` | IEEE active branch compiled |
+| 2026-05-31 | Filled sparse page 18 by expanding the conclusion with deployment-facing interpretation of channel-aware offloading, federated zone learning, Stage-2 allocation, and operational monitoring | Deferred until IEEE draft stabilizes | `ieee_access/sections/conclusion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+| 2026-05-31 | Further filled page 18 visually by adding a compact deployment-reading table for Stage-1 and Stage-2 responses under queue, channel, deadline, and heavy-load conditions | Deferred until IEEE draft stabilizes | `ieee_access/sections/conclusion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+| 2026-05-31 | Humanized the active IEEE draft, removed internal project-log wording, fixed float-flow and hyphenation controls, removed visible placeholder biographies, and restored a 22-page compiled PDF | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/*.tex`, `ieee_access/main.pdf`, `ieee_access/COMPILE_NOTES.md` | IEEE active branch compiled |
+| 2026-05-31 | Repaired over-compressed IEEE formatting after clarifying that 22 pages is a minimum, restored readable bibliography sizing and clean appendix/reference breaks, and added a compact appendix diagnostic so the draft compiles as a cleaner 23-page PDF | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/appendix.tex`, `ieee_access/sections/results_discussion.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf` | IEEE active branch compiled |
+| 2026-05-31 | Filled awkward empty-column areas on pages 13, 15, and 17 by moving the action-distribution figure into the QoS subsection, converting the task-type edge-share plot to an in-section column figure, and adding a compact Stage-2 allocation formula/readout with explanatory allocator text | Deferred until IEEE draft stabilizes | `ieee_access/sections/results_discussion.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/_layout_preview/page_13.png`, `ieee_access/_layout_preview/page_15.png`, `ieee_access/_layout_preview/page_17.png` | IEEE active branch compiled |
+| 2026-05-31 | Stabilized IEEE Access float layout by combining scorecard/tradeoff visuals, restoring the multi-seed ablation table as a readable full-width table, loosening forced floats, keeping the allocator CDF in the Stage-2 section, moving the deployment table earlier, and removing the forced appendix-start break; final compile is 22 pages | Deferred until IEEE draft stabilizes | `ieee_access/sections/results_discussion.tex`, `ieee_access/tables/multiseed_ablation.tex`, `ieee_access/sections/conclusion.tex`, `ieee_access/sections/appendix.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/_layout_audit/page_*.png` | IEEE active branch compiled |
+| 2026-05-31 | Implemented the approved IEEE review-fix consistency pass: rejection is now selected-path feasibility/admission failure, broad QoS failure is separate, reward/checkpoint wording is aligned, Stage-2 allocator denominator and risk notation are clarified, communication-cost overclaiming is removed, stale methodology source is archived, and metadata placeholders are documented; final compile is 23 pages with 20 references | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/*.tex`, `ieee_access/tables/*.tex`, `ieee_access/algorithms/*.tex`, `ieee_access/macros/canonical_metrics.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/_review_fix_audit/page_*.png` | IEEE active branch compiled |
+
+================================================================================
+2026-05-31 IEEE ACCESS PAGE 17--18 LAYOUT REPAIR
+================================================================================
+
+Trigger:
+- The user flagged pages 17 and 18 as wrongly formatted, with excessive empty
+  space and uneven spacing between paragraphs, figures, images, and tables.
+
+Implemented layout changes:
+- Added consistent global float spacing in `Paper_LATEX/ieee_access/main.tex`.
+- Merged the standalone policy action-distribution plot into the existing
+  policy scorecard/tradeoff figure to remove one drifting result float.
+- Converted `tables/scenario_table.tex` from a full-width table to a compact
+  in-column table.
+- Grouped the scenario heatmap, Oracle-agreement matrix, and task-type
+  edge-share plot into one compact scenario diagnostic figure.
+- Converted `tables/multiseed_ablation.tex` from a full-width table to an
+  in-column table so the ablation block stays close to its discussion.
+- Moved Stage-2 allocator comparison tables later in the Resource Allocation
+  subsection so explanatory allocator text and figures fill page 17 before the
+  tables appear on page 18.
+
+Files updated:
+- `Paper_LATEX/ieee_access/main.tex`
+- `Paper_LATEX/ieee_access/sections/results_discussion.tex`
+- `Paper_LATEX/ieee_access/tables/scenario_table.tex`
+- `Paper_LATEX/ieee_access/tables/multiseed_ablation.tex`
+- `Paper_LATEX/ieee_access/COMPILE_NOTES.md`
+- `Paper_LATEX/shared/sync_ledger.md`
+- `context.txt`
+
+Verification:
+- Bundled Tectonic 0.16.9 compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`
+- Current page count: 23 pages.
+- `main.bbl` contains exactly 20 bibliography items.
+- Severe log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing figures, emergency stops, float-too-large warnings, or
+  overfull-box matches.
+- Visual previews for the repaired area were written to
+  `Paper_LATEX/ieee_access/_page17_18_fix_final2/`.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Repaired results-section page 17--18 whitespace and float ordering by grouping related diagnostics, converting scenario/ablation tables to in-column placement, and moving allocator tables after the allocator explanation | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/results_discussion.tex`, `ieee_access/tables/scenario_table.tex`, `ieee_access/tables/multiseed_ablation.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+END OF PLAN
+================================================================================
+
+================================================================================
+2026-05-31 FRESH MANUSCRIPT EXPORT SYNC INTO IEEE ACCESS DRAFT
+================================================================================
+
+Trigger:
+- The user reran the notebook and asked to extract the required completed
+  results and apply them carefully to the active IEEE Access manuscript.
+
+Source artifacts inspected:
+- `dataset3/_v66_cache/manuscript_exports/exports_index.json`
+- `dataset3/_v66_cache/manuscript_exports/reproducibility_manifest.json`
+- `dataset3/_v66_cache/manuscript_exports/main_policy_comparison_test_only.csv`
+- `dataset3/_v66_cache/manuscript_exports/fed_ddqn_ablation_summary.csv`
+- `dataset3/_v66_cache/manuscript_exports/fed_ddqn_multiseed_raw.csv`
+- `dataset3/_v66_cache/manuscript_exports/scenario_wise_final_table.csv`
+- `dataset3/_v66_cache/manuscript_exports/allocator_target_risk_spec.json`
+
+Result-handling decision:
+- Main policy-comparison values already matched the active manuscript and were
+  not changed.
+- The completed Fed-DDQN ablation export was promoted into the paper by adding
+  mean-plus-standard-deviation values for SLA, rejection, and edge usage, not
+  only latency.
+- The completed Stage-2 allocator export was promoted into the paper, replacing
+  stale allocator table values and the corresponding result paragraph.
+- The checksum manifest wording was updated because `dataset_checksums.csv` now
+  exists in the manuscript export bundle.
+- Optional `gamma_zero_ablation_results.csv`, `baseline_multiseed_raw.csv`, and
+  `baseline_multiseed_summary.csv` were still absent, so no gamma-zero or
+  baseline-variance numbers were inserted.
+
+Files updated:
+- `Paper_LATEX/shared/canonical_metrics.tex`
+- `Paper_LATEX/shared/sync_ledger.md`
+- `Paper_LATEX/ieee_access/macros/canonical_metrics.tex`
+- `Paper_LATEX/ieee_access/tables/multiseed_ablation.tex`
+- `Paper_LATEX/ieee_access/tables/allocator_results.tex`
+- `Paper_LATEX/ieee_access/tables/reproducibility_manifest.tex`
+- `Paper_LATEX/ieee_access/sections/results_discussion.tex`
+- `Paper_LATEX/ieee_access/sections/dataset.tex`
+- `Paper_LATEX/ieee_access/COMPILE_NOTES.md`
+- `context.txt`
+
+Verification:
+- Bundled Tectonic 0.16.9 compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`
+- Current page count: 25 pages.
+- `main.bbl` contains exactly 20 bibliography items.
+- Severe log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing figures, emergency stops, float-too-large warnings, or
+  overfull-box matches.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Synced active IEEE draft with fresh manuscript export results: main comparison confirmed, ablation table expanded with all exported standard deviations, allocator values refreshed, checksum-manifest wording updated, and optional unrun gamma-zero/baseline-variance values left out | Deferred until IEEE draft stabilizes | `ieee_access/tables/*.tex`, `ieee_access/sections/results_discussion.tex`, `ieee_access/sections/dataset.tex`, `ieee_access/macros/canonical_metrics.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+END OF PLAN
+================================================================================
+
+================================================================================
+2026-05-31 v6.6 NOTEBOOK HOOKS AND REPRODUCIBILITY EXPORT BUNDLE
+================================================================================
+
+Trigger:
+- The user asked to implement notebook hooks that support terminal-masked DDQN
+  targets, optional gamma-zero ablation, optional DDQN/FL-DDPG baseline
+  multi-seed testing, and manuscript-ready exports without forcing a full
+  notebook rerun.
+
+Implemented notebook changes:
+- `v6.6.ipynb` now defines cache-preserving flags:
+  `RUN_GAMMA_ZERO_ABLATION=False`, `RUN_BASELINE_MULTI_SEED=False`,
+  `FORCE_RETRAIN_BASELINE_MULTI_SEED=False`, and `EXPORT_REPRO_BUNDLE=True`.
+- Existing trained Stage-1 model artifacts remain under `dataset3/_v64_cache`.
+- New optional hook caches and manuscript exports are routed under
+  `dataset3/_v66_cache`.
+- The tensor replay buffer now stores terminal `done` values and returns them
+  from both normal and prioritized sampling.
+- Proposed Fed-DDQN, proposed ablation variants, centralized DDQN, and
+  FL-DDPG-style baseline training paths now use terminal-masked DDQN targets:
+  `r + gamma * (1 - done) * Q_target(next_state)`.
+- The ablation trainer now supports per-variant gamma without changing the
+  default ablation list or invalidating the existing aggregate ablation cache.
+- A disabled-by-default `No Bootstrapping (Gamma=0)` hook was added and cached
+  separately from the main proposed-model ablation cache.
+- Disabled-by-default DDQN/FL-DDPG multi-seed hooks over `[42, 77, 123]` were
+  added and cached separately from the proposed Fed-DDQN ablation suite.
+- A partial-rerun guard was added so later notebook cells can define the new
+  flags and `_v66_cache` paths even if the top configuration cell was not rerun
+  in the current kernel.
+- A manuscript export cell was inserted after the final metric dashboard and
+  before paper-figure generation.
+
+Generated manuscript exports:
+- `dataset3/_v66_cache/manuscript_exports/dataset_checksums.csv`
+- `dataset3/_v66_cache/manuscript_exports/split_manifest.json`
+- `dataset3/_v66_cache/manuscript_exports/reward_config.json`
+- `dataset3/_v66_cache/manuscript_exports/allocator_target_risk_spec.json`
+- `dataset3/_v66_cache/manuscript_exports/main_policy_comparison_test_only.csv`
+- `dataset3/_v66_cache/manuscript_exports/fed_ddqn_ablation_summary.csv`
+- `dataset3/_v66_cache/manuscript_exports/fed_ddqn_multiseed_raw.csv`
+- `dataset3/_v66_cache/manuscript_exports/scenario_wise_final_table.csv`
+- `dataset3/_v66_cache/manuscript_exports/reproducibility_manifest.json`
+- `dataset3/_v66_cache/manuscript_exports/exports_index.json`
+
+Deferred optional exports:
+- `gamma_zero_ablation_results.csv`
+- `baseline_multiseed_raw.csv`
+- `baseline_multiseed_summary.csv`
+
+Manuscript handling:
+- No gamma-zero or baseline-variance tables were inserted into the IEEE Access
+  manuscript because those optional experiments have not been run yet.
+- `Paper_LATEX/ieee_access/COMPILE_NOTES.md` now records the hook behavior,
+  export location, and deferred table policy.
+
+Verification:
+- `v6.6.ipynb` is valid JSON.
+- All 38 code cells passed Python AST parsing.
+- Static target/replay checks found no stale unmasked training-target patterns.
+- ReplayBuffer smoke test confirmed stored `done` values in normal and
+  prioritized samples.
+- Cache-only export smoke test generated the manuscript bundle from existing
+  saved caches without retraining.
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`; current PDF is
+  25 pages with 20 bibliography items.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Added v6.6 notebook hooks for terminal-masked DDQN targets, optional gamma-zero ablation, optional DDQN/FL-DDPG baseline multi-seed testing, and cache-only manuscript exports; no unrun optional numbers inserted into the IEEE paper | Deferred until IEEE draft stabilizes | `v6.6.ipynb`, `dataset3/_v66_cache/manuscript_exports/`, `ieee_access/COMPILE_NOTES.md` | IEEE active branch compiled |
+
+================================================================================
+END OF PLAN
+================================================================================
+
+================================================================================
+2026-05-31 IEEE ACCESS FIGURE 20 REPLACEMENT
+================================================================================
+
+Trigger:
+- The user asked to remove Figure 20 because the claim-evidence/nomenclature
+  style map would not be useful or visible to readers, and to replace it with a
+  better metric-style figure.
+
+Implemented changes:
+- Removed the claim-evidence map from `sections/appendix.tex`.
+- Created a new high-resolution metric figure:
+  `Paper_LATEX/ieee_access/figures/diagnostics/173_fig_a26_policy_metric_snapshot.png`
+- Replaced Figure 20 with a core test-metric snapshot comparing DDQN, FL-DDPG,
+  Fed-DDQN, and Oracle on latency, SLA, rejection, and edge usage.
+- Updated the Figure 20 caption and surrounding text to describe the metric
+  tradeoff instead of a manuscript navigation/evidence map.
+- Removed the later duplicate compact-metric figure block so the appendix does
+  not repeat the same idea.
+
+Verification:
+- Bundled Tectonic 0.16.9 compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 25 pages.
+- `main.bbl` contains exactly 20 references.
+- Severe log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing figures, emergency stops, float-too-large warnings, or
+  overfull-box matches.
+- Page previews for the replacement were rendered in:
+  `Paper_LATEX/ieee_access/_fig20_replacement_audit/`
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Replaced appendix Figure 20 claim-evidence map with a reader-facing core metric snapshot and updated the appendix text | Deferred until IEEE draft stabilizes | `ieee_access/sections/appendix.tex`, `ieee_access/figures/diagnostics/173_fig_a26_policy_metric_snapshot.png`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+END OF PLAN
+================================================================================
+
+================================================================================
+2026-05-31 IEEE ACCESS MANUSCRIPT-ONLY REVIEW FIX PASS
+================================================================================
+
+Trigger:
+- The user approved a manuscript-only review plan and explicitly asked not to
+  modify `v6.6.ipynb`, not to add notebook hooks, and not to report unrun
+  gamma-zero or baseline multi-seed results.
+
+Implemented IEEE Access changes:
+- Reframed Stage 1 as an offline exogenous-transition Fed-DDQN benchmark:
+  actions affect current-task reward, while future CSV states remain fixed.
+- Added terminal-mask DDQN target notation with `d_i^{term}` at sequence,
+  split, gap, and final-sample boundaries.
+- Added `tables/method_parameters.tex` for missing notation:
+  `u_min`, `P_i^e`, `H_i`, `h_i`, `B(j,t)`, `C^r_{j,t}`, `epsilon`, `eta`,
+  `w`, `z_i`, and `f_phi`.
+- Clarified that CPU, memory, bandwidth, and availability values are
+  generator-native pressure/availability quantities rather than calibrated
+  physical measurements from one deployment.
+- Updated the effective-bandwidth equation with clipped packet-loss,
+  outage, jitter/congestion domains and a positive floor.
+- Added `tables/reward_reproducibility.tex` covering implemented reward
+  components, clipping, validation weights, and fixed versus validation-selected
+  settings.
+- Replaced the short baseline table with a provenance/adaptation table:
+  method family, original objective, local adaptation, validation protocol, and
+  fidelity.
+- Added `tables/reproducibility_manifest.tex` listing the dataset generator,
+  six CSV files, split protocol, label-generation logic, analysis workflow,
+  figure exporter, manuscript figures, and checksum plan.
+- Expanded Stage-2 allocator text with generated/proxy target equations based
+  on urgency, demand, task type, queue pressure, reliability, low battery,
+  dependency, and network stress.
+- Clarified pre-decision risk and capacity normalization; realized labels,
+  Oracle actions, and generated final allocation targets are excluded from the
+  risk estimate/input.
+- Added scenario-table notes explaining descriptive dashes and why the
+  impossible-deadline row can have 100% rejection but lower SLA violation.
+- Toned down causal claims so gains are attributed to the combined training,
+  reward, and validation design rather than federation alone.
+
+Explicit non-changes:
+- `v6.6.ipynb` was not edited.
+- No gamma-zero ablation hooks or numbers were added.
+- No baseline multi-seed hooks or numbers were added.
+- Reported main result values, author metadata, and 20-reference bibliography
+  count were not changed.
+
+Verification:
+- Bundled Tectonic 0.16.9 compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 26 pages.
+- `main.bbl` contains exactly 20 bibliography items.
+- Severe log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing figures, emergency stops, float-too-large warnings, or
+  overfull-box matches.
+- Active-source scan found no stale `Dataset3`, `dataset3`, `v6.x`, notebook,
+  internal cache, CUDA wording, or federation-only causal overclaim.
+- Audit previews were generated in
+  `Paper_LATEX/ieee_access/_review_fix2_audit/`.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Implemented IEEE manuscript-only review fixes for exogenous-transition framing, terminal-mask DDQN target notation, reward reproducibility, expanded notation, baseline provenance, Stage-2 target/risk details, scenario notes, and reproducibility package statement | Deferred until IEEE draft stabilizes | `ieee_access/sections/*.tex`, `ieee_access/tables/*.tex`, `ieee_access/algorithms/*.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-05-31 IEEE ACCESS MAX TWO IMAGES PER ROW FIGURE PASS
+================================================================================
+
+Trigger:
+- The user requested that grouped figures should not show three images in one
+  row and should use at most two images per row.
+
+Implemented IEEE Access changes:
+- Updated the grouped policy result figure in
+  `Paper_LATEX/ieee_access/sections/results_discussion.tex` from a three-panel
+  row into a two-plus-one layout.
+- Updated the grouped scenario diagnostics figure with the same two-plus-one
+  layout.
+- Added float-placement controls in `Paper_LATEX/ieee_access/main.tex` so the
+  resulting full-width figure groups align near the top of float pages instead
+  of leaving large top whitespace.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 25 pages.
+- `main.bbl` contains exactly 20 references.
+- Severe log scan found no fatal LaTeX errors, undefined citations, undefined
+  references, missing figures, emergency stops, float-too-large warnings, or
+  overfull-box matches.
+- Source scan found no remaining three-across `0.32\textwidth` grouped image
+  rows.
+- Visual previews were written to
+  `Paper_LATEX/ieee_access/_max_two_images_per_row_preview/`.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-05-31 | Adjusted grouped IEEE result figures to at-most-two images per row using two-plus-one layouts and top-aligned float pages | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS FIGURE PLACEMENT AND MISSING-GRAPHIC AUDIT
+================================================================================
+
+Trigger:
+- The user reported that some figure descriptions appeared without the expected
+  figures nearby.
+
+Implemented IEEE Access changes:
+- Audited all active `\includegraphics` commands in
+  `Paper_LATEX/ieee_access`; every referenced image file exists.
+- Confirmed there are no undefined figure references in the active source.
+- Added `stfloats` support in `Paper_LATEX/ieee_access/main.tex`.
+- Changed the Stage-1 latency-improvement figure to bottom double-column
+  placement so it stays closer to the main-results discussion.
+- Added targeted `\FloatBarrier` guards after the grouped policy and scenario
+  diagnostic figures in `sections/results_discussion.tex`.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 25 pages.
+- Static figure audit found zero missing image files and zero missing figure
+  labels/references.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Audited active IEEE figure paths/references and tightened result-section float placement so figure descriptions stay closer to their visuals | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS FIGURE 10 PAGE-15 RIGHT-COLUMN PASS
+================================================================================
+
+Trigger:
+- The user requested that Fig. 10 be made smaller and moved, with its
+  description, into the page-15 right-column space.
+
+Implemented IEEE Access changes:
+- Converted Fig. 10 from a large double-column result figure into a smaller
+  single-column figure.
+- Moved Fig. 10 and its explanatory paragraph so they occupy the page-15 right
+  column next to the main-results discussion.
+- Tested a bottom-placement alternative for Table 12, rejected it because it
+  degraded the page, and restored Table 12 to its original top placement.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 24 pages.
+- Rendered page 15 confirms Fig. 10 is smaller and placed in the right column
+  with its caption and explanatory text.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Reduced Fig. 10 and moved it with its caption/explanation into the page-15 right column | Deferred until IEEE draft stabilizes | `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS FORMER FIGURE 11 SPLIT PASS
+================================================================================
+
+Trigger:
+- The user requested that the three images in the former Fig. 11 be separated,
+  with the Stage-1 policy tradeoff and policy action-distribution plots moved
+  to the left and right columns of page 15, and the remaining scorecard plot
+  kept later as a centered, larger figure.
+
+Implemented IEEE Access changes:
+- Split the Stage-1 policy tradeoff bubble and policy action-distribution plots
+  into two independent side-by-side figures near the main test-comparison
+  discussion.
+- Kept the policy multi-objective scorecard as a separate centered figure and
+  increased its width.
+- Updated result prose so the three visuals are referenced independently rather
+  than as panels inside one clustered figure.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 24 pages.
+- Rendered pages confirm the tradeoff and action-distribution figures appear
+  together on page 15, while the scorecard appears centered and enlarged on the
+  next result page.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Split the former Fig. 11 into independent tradeoff, action-distribution, and centered scorecard figures | Deferred until IEEE draft stabilizes | `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS TABLE 14 TWO-COLUMN ABLATION PASS
+================================================================================
+
+Trigger:
+- The user requested that Table 14, "Three-seed Fed-DDQN and ablation
+  summary," be made larger and centered across both columns because the
+  single-column layout was too small.
+
+Implemented IEEE Access changes:
+- Converted `tables/multiseed_ablation.tex` from a single-column `[H]` table
+  into a two-column `table*`.
+- Replaced the compressed `\resizebox{\columnwidth}{!}{...}` formatting with a
+  wider `tabular*` at `0.96\textwidth`.
+- Kept the table directly after the 8.4 Multi-Seed Ablation theory paragraph
+  and added a local `\FloatBarrier` before the ablation interval figure so the
+  reader sees the subsection explanation, full-width table, and figure in the
+  intended order.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 24 pages.
+- Temporary TeX page-count probe reported `MAINPDFPAGES=24`; probe artifacts
+  were removed.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Converted Table 14 into a readable two-column ablation summary placed with the 8.4 Multi-Seed Ablation discussion | Deferred until IEEE draft stabilizes | `ieee_access/tables/multiseed_ablation.tex`, `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS PAGE 17-18 SINGLE-COLUMN FIGURE REFLOW
+================================================================================
+
+Trigger:
+- The user requested that Fig. 15 move into the spare right-column area on page
+  17, with the ablation conclusion and early Resource Allocation text rising
+  into the freed space, and that Fig. 16 move toward the left column of page 18
+  without disturbing later pages.
+
+Implemented IEEE Access changes:
+- Changed the ablation interval figure to a top-priority single-column float
+  and increased it to full `\columnwidth`.
+- Removed the barrier between the ablation conclusion and
+  `\subsection{Resource Allocation}` so the subsection opening text can occupy
+  the space that the fixed figure previously blocked.
+- Changed the Stage-2 allocation readout figure to a top-priority single-column
+  float.
+- Added a local barrier immediately before the Stage-2 allocation readout so
+  the first Resource Allocation paragraphs stay ahead of that figure while the
+  rest of the manuscript remains anchored.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 24 pages.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Reflowed the page 17-18 single-column figures around 8.4 and 8.5 so the text can rise into the previously blocked column space | Deferred until IEEE draft stabilizes | `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS PAGE 17-18 REFLOW REVERT
+================================================================================
+
+Trigger:
+- The user requested undoing the last two page-17/page-18 layout changes and
+  restoring the earlier format.
+
+Implemented IEEE Access changes:
+- Restored Fig. 15 to its earlier fixed `[H]` placement immediately after
+  Table 14, using `0.92\columnwidth`.
+- Restored the ablation conclusion paragraph after Fig. 15.
+- Restored the `\FloatBarrier` before `\subsection{Resource Allocation}`.
+- Restored Fig. 16 to its earlier fixed `[H]` placement and `0.88\columnwidth`
+  boxed minipage.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDF: `Paper_LATEX/ieee_access/main.pdf`.
+- Current page count: 24 pages.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Reverted the last two page-17/page-18 reflow edits and restored the earlier Fig. 15/Fig. 16 ordering | Deferred until IEEE draft stabilizes | `ieee_access/sections/results_discussion.tex`, `ieee_access/main.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS CROSS-EDITOR COMPILE GUARD
+================================================================================
+
+Trigger:
+- The user reported that compiling with other LaTeX software could show an
+  older or inconsistent layout.
+
+Implemented IEEE Access changes:
+- Added TeX root/program comments to `ieee_access/main.tex`.
+- Added `ieee_access/.latexmkrc` to force latexmk-compatible tools to use
+  XeLaTeX.
+- Refreshed `ieee_access/main.pdf` and `ieee_access/rebuild.pdf` from the same
+  successful Tectonic build.
+- Did not change manuscript content, result values, figure order, or table
+  data.
+
+External build guidance:
+- Compile `main.tex`, not a section file or archived folder.
+- Use XeLaTeX or latexmk with the included `.latexmkrc`.
+- Clean auxiliary files if a PDF viewer/editor still displays a previous
+  layout.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Current PDFs: `Paper_LATEX/ieee_access/main.pdf` and
+  `Paper_LATEX/ieee_access/rebuild.pdf`.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Added cross-editor compile guards and refreshed both active IEEE PDFs | Deferred until IEEE draft stabilizes | `ieee_access/main.tex`, `ieee_access/.latexmkrc`, `ieee_access/main.pdf`, `ieee_access/rebuild.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS PAGE-14-ONWARD REBUILD VERIFICATION
+================================================================================
+
+Trigger:
+- The user requested that the active LaTeX from page 14 onward strictly follow
+  `Paper_LATEX/ieee_access/rebuild.pdf`, and that every page of the reference
+  PDF be exported as images for visual checking.
+
+Implemented IEEE Access changes:
+- Treated `ieee_access/rebuild.pdf` as the authoritative layout reference.
+- Created `ieee_access/image_pdf/`.
+- Rendered `rebuild.pdf` at 300 DPI as `image_pdf/page_01.png` through
+  `image_pdf/page_24.png`.
+- Compiled `ieee_access/main.tex` with bundled Tectonic.
+- Rendered the compiled `main.pdf` at 300 DPI as
+  `image_pdf/compiled_page_01.png` through
+  `image_pdf/compiled_page_24.png`.
+- Compared the rendered pages with exact pixel comparison. Pages 14--24 matched
+  exactly, and the full 24-page comparison also matched exactly.
+- Refreshed `ieee_access/main.pdf` and `ieee_access/rebuild.pdf` from the same
+  verified build.
+- No manuscript content, result values, captions, citations, table values,
+  author metadata, figure ordering, or LaTeX structure were changed because the
+  active source already reproduced the reference layout.
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Final PDF page count: 24 pages.
+- `main.pdf` and `rebuild.pdf` now have the same SHA-256 hash.
+- Reference and compiled page images are stored in
+  `Paper_LATEX/ieee_access/image_pdf/`.
+- No missing `\includegraphics` targets were found in the active IEEE source.
+- The final log scan found no undefined citations or references. Two
+  pre-existing overfull warnings remain outside the requested page-14+ rebuild
+  area: `sections/stage2_allocator.tex` line 55 and `tables/baselines.tex`
+  line 20.
+
+Renderer note:
+- Working renderer files are stored under
+  `ieee_access/_pdf_renderer_vendor_manual/`, with wheels retained in
+  `ieee_access/_wheels/` for reproducibility.
+- Broken experimental renderer folders created during setup were removed after
+  the verified renderer path was established.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Verified page-14-onward IEEE layout against `rebuild.pdf` using 300-DPI page images and refreshed both active PDFs | Deferred until IEEE draft stabilizes | `ieee_access/image_pdf/page_*.png`, `ieee_access/image_pdf/compiled_page_*.png`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/rebuild.pdf` | IEEE active branch compiled and pixel-verified |
+
+================================================================================
+2026-06-01 IEEE ACCESS PASTED REVIEW NOTATION AND METRIC FIXES
+================================================================================
+
+Trigger:
+- The user requested execution of
+  `docs/superpowers/plans/2026-06-01-ieee-access-notation-metric-fixes.md`
+  after sending pasted review comments about notation, allocator metrics,
+  scenario labels, reward definitions, and baseline provenance.
+
+Implemented IEEE Access changes:
+- Renamed the DDQN terminal-mask symbol from `d_i^{\mathrm{term}}` to
+  `\zeta_i^{\mathrm{term}}`.
+- Corrected the edge queue carryover expression so stress/recovery adjustment
+  is projected with the rest of the queue update, preserving nonnegative
+  queues.
+- Added deadline-tightness notation and renamed the real-time flag to
+  `\chi_i^{\mathrm{rt}}`.
+- Added the allocator-valid set `\mathcal{I}^{\mathrm{valid}}_e` and used it
+  in the Stage-2 allocation MAE definition.
+- Reworded impossible-deadline wording into a deadline-admission predicate
+  explanation so the scenario table aligns with SLA evaluation.
+- Clarified that bandwidth use and resource pressures are generator-native
+  normalized quantities.
+- Added `L_i^{\mathrm{best}}` and `L_i^{\mathrm{worst}}` notation for reward
+  normalization.
+- Calibrated baseline provenance wording to distinguish faithful neural
+  baselines from style-inspired scheduling and metaheuristic comparators.
+- Fixed the previous overfull warnings in the allocator formula block and
+  baseline provenance table.
+
+Files changed:
+- `ieee_access/sections/proposed_fed_ddqn.tex`
+- `ieee_access/sections/dataset.tex`
+- `ieee_access/sections/stage2_allocator.tex`
+- `ieee_access/sections/introduction.tex`
+- `ieee_access/sections/experimental_setup.tex`
+- `ieee_access/tables/method_parameters.tex`
+- `ieee_access/tables/problem_notation.tex`
+- `ieee_access/tables/reward_reproducibility.tex`
+- `ieee_access/tables/scenario_table.tex`
+- `ieee_access/tables/main_results.tex`
+- `ieee_access/tables/evaluation_metrics.tex`
+- `ieee_access/tables/allocator_results.tex`
+- `ieee_access/tables/baselines.tex`
+- `ieee_access/COMPILE_NOTES.md`
+- `ieee_access/main.pdf`
+- `ieee_access/rebuild.pdf`
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex`.
+- Final PDF page count: 24 pages.
+- `main.pdf` and `rebuild.pdf` were refreshed from the same build and have the
+  same SHA-256 hash.
+- Final log scan found no undefined citations, undefined references, missing
+  figure files, or overfull boxes.
+- Rendered-page spot checks on pages 12--15 showed readable formulas, tables,
+  metric notes, and result figure placement.
+- No reported numbers, citation keys, author metadata, table data values, or
+  figure files were changed.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Applied pasted-review notation and metric fixes, refreshed active IEEE PDFs, and verified a clean compile | Deferred until IEEE draft stabilizes | `ieee_access/sections/*.tex`, `ieee_access/tables/*.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/rebuild.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS FIXES-NEEDED T2-T7 TECHNICAL REVIEW PASS
+================================================================================
+
+Trigger:
+- The user requested implementation of the approved
+  "IEEE Access T2-T7 Technical Review Fix Plan" based on
+  `Paper_LATEX/fixes-needed.pdf`.
+- Scope intentionally excludes T1, E1/E2, and external-verification items.
+- This is a manuscript-only repair pass. Notebook results, metrics, citation
+  keys, author metadata, table values, and figures are not changed.
+
+Implemented IEEE Access changes:
+- Added a formal latency-reference Oracle definition in the system model:
+  `a_i^{\mathrm{orc}}` selects the lower finite generated latency among edge
+  and cloud alternatives under the sentinel-latency filter.
+- Replaced broad "Oracle ceiling" language with latency-reference wording and
+  explained why Oracle SLA/rejection outputs remain descriptive rather than
+  guaranteed QoS bounds.
+- Added complete edge, cloud, and selected-path feasibility predicates, then
+  tied `F_i` and `R_i` to selected-path infeasibility/admission failure.
+- Clarified the distinction between `M_i` as SLA miss, `R_i` as selected-path
+  rejection, and `Q_i` as the broader QoS-failure union.
+- Standardized Stage-2 allocator notation with generated proxy targets
+  `\mathbf{y}_i^{*}` and final predictions `\hat{\mathbf{y}}_i`.
+- Updated the Stage-2 MAE equation to evaluate proxy-target error on
+  `\mathcal{I}^{\mathrm{valid}}_e`.
+- Rewrote the Stage-2 readout formula using `\mathbf{b}_i`,
+  `\tilde{\mathbf{y}}_i`, `\mathbf{y}_i^{risk}`, and
+  `\hat{\mathbf{y}}_i`.
+- Replaced the handwritten channel-margin expression with normalized
+  dimensionless edge/cloud scores and noted that it is interpretive only.
+- Calibrated latency and baseline-fidelity claims to refer to implemented main
+  comparison methods in the shared evaluation pipeline.
+- Fixed `\dataset{}` prose/caption spacing, including the dataset-schema
+  caption.
+
+Files changed:
+- `ieee_access/sections/system_model.tex`
+- `ieee_access/sections/proposed_fed_ddqn.tex`
+- `ieee_access/sections/stage2_allocator.tex`
+- `ieee_access/sections/results_discussion.tex`
+- `ieee_access/sections/abstract_keywords.tex`
+- `ieee_access/sections/introduction.tex`
+- `ieee_access/sections/dataset.tex`
+- `ieee_access/sections/experimental_setup.tex`
+- `ieee_access/sections/related_work.tex`
+- `ieee_access/sections/limitations.tex`
+- `ieee_access/sections/conclusion.tex`
+- `ieee_access/sections/appendix.tex`
+- `ieee_access/tables/problem_notation.tex`
+- `ieee_access/tables/method_parameters.tex`
+- `ieee_access/tables/dataset_schema.tex`
+- `ieee_access/tables/baselines.tex`
+- `ieee_access/tables/evaluation_metrics.tex`
+- `ieee_access/tables/main_results.tex`
+- `ieee_access/tables/hyperparameters.tex`
+- `ieee_access/tables/allocator_results.tex`
+- `ieee_access/macros/paper_macros.tex`
+- `ieee_access/COMPILE_NOTES.md`
+- `ieee_access/main.pdf`
+- `ieee_access/rebuild.pdf`
+
+Verification:
+- Bundled Tectonic compiled `Paper_LATEX/ieee_access/main.tex` successfully.
+- Direct Tectonic compile with kept logs also passed.
+- Final PDF page count: 25 pages.
+- `main.pdf` and `rebuild.pdf` were refreshed from the same successful build
+  and have matching SHA-256 hashes.
+- Log scan found no undefined citations, undefined references, missing figure
+  files, or overfull boxes.
+- Manuscript-source scan found no stale target phrases from the review-fix
+  checklist. The generated `main.aux` file may still contain `\dataset {}`
+  because of LaTeX auxiliary serialization, but the source and rendered caption
+  use the corrected spacing.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Applied fixes-needed.pdf T2-T7 manuscript repair pass and refreshed active IEEE PDFs | Deferred until IEEE draft stabilizes | `ieee_access/sections/*.tex`, `ieee_access/tables/*.tex`, `ieee_access/macros/paper_macros.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/rebuild.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-01 IEEE ACCESS fix_needed.pdf TECHNICAL REPAIR PASS
+================================================================================
+
+Scope:
+- Implemented the approved manuscript-only repair plan for
+  `Paper_LATEX/fix_needed.pdf`.
+- Addressed major technical findings 1--5, all notation/implementation audit
+  notes, proofing-sweep items, and highest-priority fixes 1--4.
+- Skipped meaningful editorial/presentation findings, external-verification
+  items, and highest-priority item 5 as requested.
+- Did not edit `v6.6.ipynb`, rerun experiments, alter result values, change
+  citation keys, change author metadata, or add external artifact claims.
+
+Implemented IEEE Access changes:
+- Replaced the scenario table with Fed-DDQN scenario rows from
+  `dataset3/_v66_cache/manuscript_exports/scenario_wise_final_table.csv`.
+- Made the scenario table use the valid policy-evaluation subset
+  (`N=9,733`) and added a note distinguishing it from the raw temporal test
+  split (`11,957` rows).
+- Updated Results prose so scenario evidence is test/evaluation-aligned and
+  no longer mixes full-dataset descriptive counts with test-only claims.
+- Standardized `\hat{\rho}_i` as a pre-decision QoS/admission-risk estimate,
+  while keeping `R_i=F_i` as selected-path rejection/admission failure,
+  `M_i` as SLA miss, and `Q_i` as the broader union metric.
+- Rewrote the Stage-2 risk-projection description to match the implementation:
+  capacity-normalized residual branch, rejection-aware demand branch, fixed
+  `0.10/0.90` blend, and final group-wise capacity normalization over
+  `\mathcal{G}^{\mathrm{valid}}_e(j,t)`.
+- Clarified capacity-normalization groups as allocator-valid edge-selected
+  tasks sharing edge node and timestep.
+- Cleaned wording that implied Stage 1 guarantees feasibility or that SLA
+  thresholds directly compute rejection.
+- Preserved the allocator headline tradeoff in the abstract and conclusion:
+  Rejection-Aware Demand gives the lowest proxy-target MAE; Residual + Risk
+  Projection gives the best efficiency score, lowest under-allocation, and zero
+  capacity violation.
+
+Files changed:
+- `ieee_access/sections/abstract_keywords.tex`
+- `ieee_access/sections/introduction.tex`
+- `ieee_access/sections/system_model.tex`
+- `ieee_access/sections/stage2_allocator.tex`
+- `ieee_access/sections/results_discussion.tex`
+- `ieee_access/sections/conclusion.tex`
+- `ieee_access/sections/appendix.tex`
+- `ieee_access/tables/scenario_table.tex`
+- `ieee_access/tables/problem_notation.tex`
+- `ieee_access/tables/method_parameters.tex`
+- `ieee_access/algorithms/stage2_allocator.tex`
+- `ieee_access/COMPILE_NOTES.md`
+- `ieee_access/main.pdf`
+- `ieee_access/rebuild.pdf`
+
+Verification:
+- Bundled Tectonic compile passed.
+- Direct Tectonic compile with kept logs passed.
+- Final page count is 25 pages.
+- `main.pdf` and `rebuild.pdf` were refreshed from the same build and have
+  identical SHA-256 hash
+  `3284f7a965d85e7790ffc36534a60bf67b897390fa8786d302e2397603060031`.
+- Scenario table numeric check matched the exported Fed-DDQN CSV rows; every
+  scenario `N` is at or below `9,733`.
+- Source scans found no stale target phrases from the repair checklist.
+- Log scan found no undefined citations, undefined references, or missing
+  figure files. A recurring page-height `Overfull \vbox` warning remains in
+  `sections/system_model`; the Stage-2 overfull hbox introduced by the wider
+  formula was removed by changing the base allocation to component form.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-01 | Applied fix_needed.pdf technical repair pass: scenario denominator repair, QoS/admission-risk notation, Stage-2 risk-projection alignment, feasibility/SLA wording cleanup, and allocator tradeoff wording | Deferred until IEEE draft stabilizes | `ieee_access/sections/*.tex`, `ieee_access/tables/scenario_table.tex`, `ieee_access/tables/problem_notation.tex`, `ieee_access/tables/method_parameters.tex`, `ieee_access/algorithms/stage2_allocator.tex`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/rebuild.pdf` | IEEE active branch compiled |
+
+================================================================================
+2026-06-02 IEEE ACCESS FIGURE TEXT-OVERLAP REPAIR PASS
+================================================================================
+
+Scope:
+- Scanned all 22 figure assets currently referenced by the active IEEE Access
+  manuscript.
+- Created figure audit inventories/contact sheets under
+  `Paper_LATEX/ieee_access/_figure_text_audit/`.
+- Repaired only figure-internal text placement. The LaTeX figure widths were
+  not changed, and edited images kept their original pixel dimensions.
+
+Figures repaired:
+- `ieee_access/figures/diagrams/150_fig_a1_system_architecture.png`
+  - Moved the cloud-path bypass note and edge-selected/resource-adaptation
+    callouts away from arrows and boxes.
+- `ieee_access/figures/diagrams/151_fig_a2_temporal_split_protocol.png`
+  - Moved gap labels above the bars and staggered close tick labels at
+    `700/715` and `850/865`.
+- `ieee_access/figures/results/152_fig_a3_policy_tradeoff_bubble.png`
+  - Repositioned policy labels with leader lines so the top policy cluster and
+    right-side heuristic labels do not overlap or clip.
+- `ieee_access/figures/results/157_fig_a8_allocator_qos_tradeoff.png`
+  - Separated allocator-variant labels and kept right-edge labels inside the
+    plotting area.
+
+Verification:
+- Bundled Tectonic compile passed.
+- Final page count is 25 pages.
+- `main.pdf` and `rebuild.pdf` were refreshed from the same build and have
+  identical SHA-256 hash:
+  `c2032a6a2e6fb9a47290f93af1372999af3232d82955ed8f2ecf57808f32751b`.
+- Rendered PDF pages were saved under
+  `Paper_LATEX/ieee_access/_figure_text_audit/pdf_pages_after/` and visually
+  checked at manuscript scale.
+- Log scan found no undefined citations, undefined references, or missing
+  figure files. The recurring page-height `Overfull \vbox` warning remains.
+
+Sync ledger update:
+
+| Date | Change | Scientific Reports path | IEEE Access path | Sync status |
+|---|---|---|---|---|
+| 2026-06-02 | Repaired active IEEE figure text overlap/readability issues while preserving figure sizes and refreshed compiled PDFs | Deferred until IEEE draft stabilizes | `ieee_access/figures/diagrams/150_fig_a1_system_architecture.png`, `ieee_access/figures/diagrams/151_fig_a2_temporal_split_protocol.png`, `ieee_access/figures/results/152_fig_a3_policy_tradeoff_bubble.png`, `ieee_access/figures/results/157_fig_a8_allocator_qos_tradeoff.png`, `ieee_access/_figure_text_audit/`, `ieee_access/COMPILE_NOTES.md`, `ieee_access/main.pdf`, `ieee_access/rebuild.pdf` | IEEE active branch compiled and visually checked |
+
+================================================================================
+END OF PLAN
+================================================================================

@@ -1,0 +1,18 @@
+\begin{table*}[!t]
+\centering
+\caption{Exact Stage-1 feature list used for offloading model input.}
+\label{tab:features}
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+Group & Included Stage-1 feature names \\
+\midrule
+Task descriptors & \texttt{task\_size\_mb}, \texttt{cpu\_cycles}, \texttt{memory\_req\_mb}, \texttt{deadline\_ms}, \texttt{priority\_level}, \texttt{energy\_required}, \texttt{security\_sensitivity}, \texttt{task\_type}, \texttt{device\_type}. \\
+Task and device flags & \texttt{is\_real\_time}, \texttt{is\_encrypted}, \texttt{is\_low\_battery}, \texttt{has\_dependency}, \texttt{retransmission\_count}. \\
+Edge state & \texttt{e\_cpu}, \texttt{e\_mem}, \texttt{e\_queue}, \texttt{e\_energy}, \texttt{e\_fail}, \texttt{e\_deg}. \\
+Network/channel state & \texttt{n\_delay}, \texttt{n\_bw}, \texttt{n\_loss}, \texttt{n\_snr}, \texttt{eff\_bw}, \texttt{n\_out}, \texttt{n\_jit}, \texttt{n\_cong}. \\
+Cloud state & \texttt{c\_cpu}, \texttt{c\_over}. \\
+Feature-label boundary & The Stage-1 feature matrix has 30 columns and is checked against \texttt{features\_raw.shape == (100000, 30)}. Label-only fields such as \texttt{rejection\_flag}, \texttt{rejected}, \texttt{sla\_violated}, \texttt{edge\_latency}, and \texttt{cloud\_latency} are not Stage-1 input features. \\
+\bottomrule
+\end{tabularx}
+\end{table*}

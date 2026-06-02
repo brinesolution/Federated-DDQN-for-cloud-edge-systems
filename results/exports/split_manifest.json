@@ -1,0 +1,45 @@
+{
+  "gap_1": {
+    "arrival_time_window": "701-715",
+    "mask_sha256": "598d7194513d96af",
+    "max_arrival_time": 715,
+    "min_arrival_time": 701,
+    "name": "gap_1",
+    "rows": 1202
+  },
+  "gap_2": {
+    "arrival_time_window": "851-865",
+    "mask_sha256": "d374585ff7d98c67",
+    "max_arrival_time": 865,
+    "min_arrival_time": 851,
+    "name": "gap_2",
+    "rows": 736
+  },
+  "protocol": "purged_temporal_train_validation_test",
+  "scaler_fit_scope": "train split only",
+  "test": {
+    "arrival_time_window": "866-1000",
+    "mask_sha256": "7b639feb8f9c5d0e",
+    "max_arrival_time": 1000,
+    "min_arrival_time": 866,
+    "name": "test",
+    "rows": 11957
+  },
+  "test_is_tuning_free": true,
+  "train": {
+    "arrival_time_window": "<=700",
+    "mask_sha256": "efd66cfc9e528f96",
+    "max_arrival_time": 700,
+    "min_arrival_time": 1,
+    "name": "train",
+    "rows": 69049
+  },
+  "validation": {
+    "arrival_time_window": "716-850",
+    "mask_sha256": "2881980f83039116",
+    "max_arrival_time": 850,
+    "min_arrival_time": 716,
+    "name": "validation",
+    "rows": 17056
+  }
+}
