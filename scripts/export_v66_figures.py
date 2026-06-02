@@ -12,10 +12,10 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 
-ROOT = Path(r"C:\Users\mayan\Desktop\3STSEM\ai\model")
-NOTEBOOK = ROOT / "v6.6.ipynb"
-TARGET = ROOT / "Figures"
-PAPER_FIG_DIR = ROOT / "paper_figures" / "ieee_access_v66"
+ROOT = Path(__file__).resolve().parents[1]
+NOTEBOOK = ROOT / "notebooks" / "v6.6.ipynb"
+TARGET = ROOT / "results" / "figures"
+EXTRA_FIG_DIR = ROOT / "result_figures" / "v66"
 
 MIN_PLOT_WIDTH = 1800
 TEXT_WIDTH_PX = 2600
@@ -88,7 +88,7 @@ def is_meaningful_text(text: str) -> bool:
         return False
     if stripped.startswith("<matplotlib.") or stripped.startswith("[<matplotlib."):
         return False
-    if "Saved paper figure" in stripped and len(stripped.splitlines()) < 4:
+    if "Saved result figure" in stripped and len(stripped.splitlines()) < 4:
         return False
     return True
 
@@ -184,7 +184,7 @@ def notebook_items(nb) -> list[ExportItem]:
             base_order = cell_idx * 1000 + out_idx
 
             if "image/png" in data:
-                # Final appendix figures are also saved at higher DPI in paper_figures.
+                # Final standalone figures may also be saved at higher DPI in result_figures.
                 if cell_idx in (72, 74):
                     continue
                 try:
@@ -203,18 +203,18 @@ def notebook_items(nb) -> list[ExportItem]:
             text = "\n".join(p for p in pieces if p).strip()
             if is_meaningful_text(text):
                 # Cell 72/74 path listings are not metric evidence; the actual figures are copied below.
-                if cell_idx in (72, 74) and "paper_figures" in text:
+                if cell_idx in (72, 74) and "result_figures" in text:
                     continue
                 label = f"{heading} metrics output {out_idx}"
                 items.append(ExportItem(base_order + 0.25, "notebook-text", heading, label, "text", text=text, cell=cell_idx, output_index=out_idx))
     return items
 
 
-def paper_figure_items() -> list[ExportItem]:
+def extra_figure_items() -> list[ExportItem]:
     items: list[ExportItem] = []
-    if not PAPER_FIG_DIR.exists():
+    if not EXTRA_FIG_DIR.exists():
         return items
-    for path in sorted(PAPER_FIG_DIR.glob("*.png")):
+    for path in sorted(EXTRA_FIG_DIR.glob("*.png")):
         name = path.stem
         match = re.match(r"fig_a(\d+)_", name)
         if match:
@@ -224,9 +224,9 @@ def paper_figure_items() -> list[ExportItem]:
         else:
             fig_no = 999
             order = 74 * 1000 + fig_no
-        heading = "IEEE Access paper figure appendix" if fig_no <= 12 else "Additional IEEE Access metrics and flowcharts"
+        heading = "Standalone result figures" if fig_no <= 12 else "Additional metrics and flowcharts"
         label = name
-        items.append(ExportItem(order, "paper-figure", heading, label, "image-file", source_path=path))
+        items.append(ExportItem(order, "result-figure", heading, label, "image-file", source_path=path))
     return items
 
 
@@ -249,7 +249,7 @@ def export_all():
     nb = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
     clear_previous_exports()
 
-    items = notebook_items(nb) + paper_figure_items()
+    items = notebook_items(nb) + extra_figure_items()
     items.sort(key=lambda x: x.order)
 
     seen_hashes: dict[str, str] = {}
@@ -267,7 +267,7 @@ def export_all():
                 img = img.convert("RGBA")
             else:
                 img = item.image
-            img = upscale_if_needed(img) if item.source != "paper-figure" else img
+            img = upscale_if_needed(img) if item.source != "result-figure" else img
             tmp = ExportItem(item.order, item.source, item.heading, item.label, "image", image=img)
             digest = item_hash(tmp)
             if digest in seen_hashes:
@@ -346,7 +346,7 @@ def export_all():
         f"Skipped exact duplicates: {len(skipped)}",
         "Notes:",
         "- Serial order follows notebook output order.",
-        "- Final appendix embedded images are replaced by higher-resolution files from paper_figures/ieee_access_v66 when available.",
+        "- Standalone embedded images are replaced by higher-resolution files from result_figures/v66 when available.",
         "- Text and printed metric outputs are rendered as high-DPI PNG pages.",
         "- Existing non-numbered files in Figures were left untouched.",
     ]

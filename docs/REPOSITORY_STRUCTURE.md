@@ -9,8 +9,6 @@ fed-ddqn-edge-cloud-iot/
 ├── docs/
 ├── notebooks/
 │   └── v6.6.ipynb
-├── paper/
-│   └── ieee_access/
 ├── results/
 │   ├── exports/
 │   └── figures/
@@ -25,7 +23,10 @@ fed-ddqn-edge-cloud-iot/
 - `notebooks/`: main experimental notebook.
 - `src/data_generation/`: dataset generator and generator validation test.
 - `scripts/`: helper scripts copied from the working project.
-- `results/exports/`: CSV/JSON outputs used by the paper.
+- `results/exports/`: CSV/JSON experiment outputs.
 - `results/figures/`: selected reader-facing figures.
-- `paper/ieee_access/`: active IEEE Access source/PDF snapshot.
-- `docs/`: project context and reproducibility documentation.
+- `docs/`: dataset, result, and reproducibility documentation.
+
+This Git-ready package is focused on reproducible code, data, scripts, selected
+figures, and exported experiment metrics. Model checkpoints and runtime caches
+are left out to keep the repository clone-friendly.

@@ -1,32 +1,33 @@
-# Federated DDQN Edge-Cloud IoT Offloading Research
+# Fed-DDQN Edge-Cloud IoT Offloading
 
-Personal research project for channel-aware task offloading and rejection-aware resource allocation in edge-cloud IoT systems.
+Personal research-code repository for channel-aware task offloading and adaptive resource allocation in edge-cloud IoT systems.
 
-The core contribution is a two-stage scheduling pipeline:
+This repository contains the **code, dataset, scripts, exported metrics, and result figures** needed to inspect and rerun the project.
+
+## Core Idea
+
+The project studies a two-stage scheduling pipeline:
 
 1. **Stage 1: Federated Double Deep Q-Network (Fed-DDQN)** for binary edge/cloud task offloading across non-IID edge zones.
 2. **Stage 2: Rejection-aware residual resource allocator** for CPU, memory, and bandwidth assignment after a task is selected for edge execution.
 
-The comparison models are included only as baselines. The proposed model is **Fed-DDQN**.
+The main proposed model is **Fed-DDQN**. Other methods are included as comparison baselines.
 
-## Repository Contents
+## Repository Structure
 
 ```text
-data/dataset3/                 Real-world-inspired synthetic benchmark CSVs and generator
-notebooks/v6.6.ipynb           Main experimental notebook
-src/data_generation/           Dataset generator and generator test
-scripts/                       Notebook/build helper scripts
-results/exports/               Manuscript-ready CSV/JSON result exports
-results/figures/               Selected result figures
-paper/ieee_access/             IEEE Access LaTeX draft source and compiled PDF
-docs/                          Project context, manuscript plan, sync ledger, dataset card
+data/dataset3/        Synthetic edge-cloud IoT benchmark CSVs and generator copy
+notebooks/            Main experimental notebook
+src/data_generation/  Dataset generator and generator test
+scripts/              Helper scripts for notebook and figure export work
+results/exports/      CSV/JSON experiment outputs
+results/figures/      Selected result figures
+docs/                 Dataset, results, and reproducibility notes
 ```
 
 ## Dataset
 
-The dataset is synthetic but deployment-inspired. It contains bursty arrivals, edge queue carryover, congestion, outage, jitter, edge degradation, cloud maintenance, low-battery tasks, emergency tasks, and firmware/update-style workload phases.
-
-Main files:
+`data/dataset3/` contains a real-world-inspired synthetic benchmark. It includes bursty arrivals, edge queue carryover, congestion, outage, jitter, edge degradation, cloud maintenance, low-battery tasks, emergency tasks, and firmware/update-style workload phases.
 
 | File | Rows | Purpose |
 |---|---:|---|
@@ -37,9 +38,9 @@ Main files:
 | `cloud_nodes.csv` | 10 | Static cloud node table |
 | `cloud_state.csv` | 10,000 | Cloud node state over 1,000 timesteps |
 
-The dataset is **not measured telemetry**. It should be described as realistic synthetic or real-world-inspired synthetic data.
+The dataset is synthetic, not measured telemetry.
 
-## Main Test Results
+## Main Results
 
 The table below is copied from `results/exports/main_policy_comparison_test_only.csv`. It uses the valid held-out policy-evaluation subset with `N = 9,733`.
 
@@ -54,32 +55,30 @@ The table below is copied from `results/exports/main_policy_comparison_test_only
 | **Fed-DDQN (Proposed)** | **136.009** | **97.73** | **2.27** | **3.68** | **67.43** |
 | Oracle | 123.310 | 97.99 | 2.01 | 3.43 | 69.27 |
 
-Oracle is a non-trainable latency-reference rule over generated finite edge/cloud alternatives. It is not a deployable policy and not a universal QoS ceiling.
+Oracle is a non-trainable latency-reference rule over generated finite edge/cloud alternatives. It is not a deployable policy.
 
-## Key Result Summary
+## Summary
 
 - Fed-DDQN achieved **136.009 ms** average latency on the valid held-out policy-evaluation subset.
 - Fed-DDQN reduced average latency by **6.15%** relative to centralized DDQN.
 - Fed-DDQN reduced average latency by **1.71%** relative to the FL-DDPG-style baseline.
 - Fed-DDQN reported **97.73% SLA satisfaction** and **3.68% rejection**.
-- The latency-reference Oracle reached **123.310 ms**, leaving measurable latency headroom.
-- Stage 2 evaluates allocation only on the allocator-valid edge-selected subset.
+- The latency-reference Oracle reached **123.310 ms**.
 
-## Stage-2 Allocator Summary
+## Stage-2 Allocator
 
-The resource allocator is evaluated after Stage 1 selects edge execution. It does not change the offloading decision. It assigns normalized CPU, memory, and bandwidth shares under capacity constraints.
+The resource allocator is evaluated after Stage 1 selects edge execution. It assigns normalized CPU, memory, and bandwidth shares under capacity constraints.
 
-Important manuscript wording:
+The exported results support this high-level readout:
 
-- Rejection-Aware Demand gives the lowest proxy-target MAE.
-- Residual + Risk Projection gives the best efficiency score, lowest under-allocation, and zero capacity violation.
-- Allocator claims are proxy-target gains on the allocator-valid edge-selected subset.
+- Rejection-Aware Demand has the lowest proxy-target MAE.
+- Residual + Risk Projection has the best efficiency score, lowest under-allocation, and zero capacity violation.
 
-See `results/exports/allocator_target_risk_spec.json` and the paper tables for the detailed allocator target/risk specification.
+See `results/exports/allocator_target_risk_spec.json` for target/risk details.
 
-## Running The Project
+## Running
 
-Install a Python environment with the packages listed in `requirements.txt`.
+Install dependencies:
 
 ```powershell
 pip install -r requirements.txt
@@ -91,9 +90,9 @@ Open the notebook:
 jupyter lab notebooks/v6.6.ipynb
 ```
 
-The packaged notebook copy resolves the dataset from `data/dataset3` when run from either the repository root or the `notebooks/` folder.
+The notebook copy resolves the dataset from `data/dataset3` when run from either the repository root or the `notebooks/` folder.
 
-Model checkpoints and long-run training caches are intentionally not included. The result exports under `results/exports/` preserve the manuscript-ready numerical outputs.
+Model checkpoints and long-run training caches are not included. Use `results/exports/` to inspect saved output metrics without retraining.
 
 ## Regenerating Dataset3
 
@@ -101,33 +100,15 @@ Model checkpoints and long-run training caches are intentionally not included. T
 python src/data_generation/generate_dataset3.py
 ```
 
-The original generator was copied from `dataset3/code.py`. Before overwriting included CSVs, back them up if you need to preserve the manuscript snapshot.
+Back up the included CSVs before overwriting them if you need to preserve this snapshot.
 
-## Paper Draft
-
-The active IEEE Access draft is included under:
-
-```text
-paper/ieee_access/
-```
-
-Important files:
-
-- `paper/ieee_access/main.tex`
-- `paper/ieee_access/main.pdf`
-- `paper/ieee_access/sections/`
-- `paper/ieee_access/tables/`
-- `paper/ieee_access/figures/`
-
-## Reproducibility Notes
-
-See:
+## Documentation
 
 - `docs/DATASET_CARD.md`
+- `docs/RESULTS_SUMMARY.md`
 - `docs/REPRODUCIBILITY.md`
-- `results/exports/reproducibility_manifest.json`
-- `results/exports/dataset_checksums.csv`
+- `docs/REPOSITORY_STRUCTURE.md`
 
 ## License
 
-No open-source license has been assigned yet. Treat this as a personal research repository pending publication decisions.
+No open-source license has been assigned yet. Treat this as a personal research-code repository.

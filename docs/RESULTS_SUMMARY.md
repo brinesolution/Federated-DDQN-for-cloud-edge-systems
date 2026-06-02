@@ -1,6 +1,6 @@
 # Results Summary
 
-This file summarizes the manuscript-ready exported results stored under `results/exports/`.
+This file summarizes the exported experiment results stored under `results/exports/`.
 
 ## Main Comparison
 
@@ -36,7 +36,7 @@ See `results/exports/fed_ddqn_ablation_summary.csv`.
 
 Stage 2 is evaluated only for allocator-valid edge-selected tasks. Its role is resource assignment after Stage 1 chooses edge.
 
-The summary used in the manuscript:
+The allocator export summary:
 
 - Rejection-Aware Demand has the lowest proxy-target MAE.
 - Residual + Risk Projection has the best efficiency score, lowest under-allocation, and zero capacity violation.

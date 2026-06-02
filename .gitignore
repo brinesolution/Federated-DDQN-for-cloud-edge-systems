@@ -25,7 +25,9 @@ dataset3/**/_v66_cache/
 *.pkl
 *.npz
 
-# LaTeX build products
+paper/
+*.pdf
+
 *.aux
 *.bbl
 *.blg
@@ -35,9 +37,6 @@ dataset3/**/_v66_cache/
 *.synctex.gz
 *.fls
 *.fdb_latexmk
-
-# Keep the manuscript PDF, but ignore generated rebuild copies by default
-paper/ieee_access/rebuild.pdf
 
 # Local scratch
 tmp/

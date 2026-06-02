@@ -42,7 +42,7 @@ The generator includes:
 
 ## Intended Use
 
-Use this dataset to evaluate relative behavior of edge/cloud offloading policies under a fixed offline benchmark. It is suitable for algorithm comparison, ablation, and paper figures.
+Use this dataset to evaluate relative behavior of edge/cloud offloading policies under a fixed offline benchmark. It is suitable for algorithm comparison, ablation, and result visualization.
 
 ## Limitations
 
