@@ -23,11 +23,11 @@ fed-ddqn-edge-cloud-iot/
 
 ## Folder Roles
 
-- `data/dataset3/`: benchmark data, generator copy, and quick-run cache files.
+- `data/dataset3/`: benchmark data, generator copy, and cache files.
 - `data/old/`: earlier dataset snapshots retained for development history.
 - `notebooks/`: main experimental notebook plus older notebook versions.
 - `src/data_generation/`: dataset generator and generator validation test.
-- `scripts/`: helper scripts copied from the working project.
+- `scripts/`: helper scripts for notebook and figure export tasks.
 - `results/exports/`: CSV/JSON experiment outputs.
 - `results/figures/`: selected reader-facing figures.
 - `docs/`: dataset, result, and reproducibility documentation.
@@ -35,7 +35,7 @@ fed-ddqn-edge-cloud-iot/
 See `docs/HISTORY_AND_CACHE.md` for the historical notebook/dataset inventory
 and quick-run cache notes.
 
-This Git-ready package is focused on reproducible research code, data, scripts,
-selected figures, exported experiment metrics, historical notebook/dataset
-versions, and quick-run caches. Paper drafts, PDFs, LaTeX sources, reference
-bundles, and publishing folders are intentionally not part of this package.
+This repository focuses on reproducible research code, data, scripts, selected
+figures, exported metrics, historical notebook and dataset versions, and
+quick-run caches. Paper drafts, PDFs, LaTeX sources, reference bundles, and
+publishing folders are intentionally kept outside the repository.

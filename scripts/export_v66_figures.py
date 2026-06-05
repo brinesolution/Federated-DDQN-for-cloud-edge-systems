@@ -202,7 +202,7 @@ def notebook_items(nb) -> list[ExportItem]:
                 pieces.append(normalize_text(out["text"]))
             text = "\n".join(p for p in pieces if p).strip()
             if is_meaningful_text(text):
-                # Cell 72/74 path listings are not metric evidence; the actual figures are copied below.
+                # Path listings are not metric evidence; the actual figures are copied below.
                 if cell_idx in (72, 74) and "result_figures" in text:
                     continue
                 label = f"{heading} metrics output {out_idx}"

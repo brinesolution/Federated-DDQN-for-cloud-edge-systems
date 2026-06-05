@@ -1,6 +1,6 @@
 # Historical Versions And Cache Notes
 
-This repository is a research-code package, so it keeps the development history that is useful for understanding how the Fed-DDQN experiment evolved.
+This repository keeps the development history needed to understand how the Fed-DDQN experiment evolved.
 
 ## Notebook History
 
@@ -27,7 +27,7 @@ Included versions:
 - `v6.4.ipynb`
 - `v6.5_multiseed_albation.ipynb`
 
-Use these only for development timeline/context. The current reproducible experiment entrypoint is `notebooks/v6.6.ipynb`.
+These files are retained for development history. The current experiment entry point is `notebooks/v6.6.ipynb`.
 
 ## Dataset History
 
@@ -44,7 +44,7 @@ data/old/Datasets/
 data/old/Datasets2/
 ```
 
-These folders preserve the previous CSV schemas and generation scripts/notebooks that were used before the final Dataset3 benchmark.
+These folders preserve the earlier CSV snapshots and generator files used before the current dataset version.
 
 ## Included Quick-Run Cache
 
@@ -54,7 +54,7 @@ The current notebook is cache-aware and can reuse artifacts from:
 data/dataset3/_v64_cache/
 ```
 
-This folder includes cached features, labels, trained model checkpoints, baseline checkpoints, policy-evaluation artifacts, allocator artifacts, and multi-seed/ablation outputs. It is included so another user can inspect or rerun much of the notebook faster when the dataset snapshot and flags match.
+This folder includes cached features, labels, trained model checkpoints, baseline checkpoints, policy-evaluation artifacts, allocator artifacts, and multi-seed ablation outputs. It is included so the notebook can be inspected or rerun more quickly when the dataset snapshot and flags match.
 
 Small experiment-export cache files are also kept under:
 
@@ -62,8 +62,8 @@ Small experiment-export cache files are also kept under:
 data/dataset3/_v66_cache/experiment_exports/
 ```
 
-These files mirror the exported CSV/JSON result artifacts in a cache-style location.
+These files mirror the exported CSV and JSON result artifacts in a cache-oriented location.
 
 ## What Is Still Kept Out
 
-This package does not include paper drafts, PDFs, LaTeX source trees, reference bundles, or publishing-specific folders. Those remain outside the GitHub-ready research-code repository.
+This repository does not include paper drafts, PDFs, LaTeX source trees, reference bundles, or publishing-specific folders. Those remain outside the code release.

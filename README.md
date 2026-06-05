@@ -1,8 +1,8 @@
 # Fed-DDQN Edge-Cloud IoT Offloading
 
-Personal research-code repository for channel-aware task offloading and adaptive resource allocation in edge-cloud IoT systems. This is a research-related project package: it keeps the runnable code, generated datasets, experiment history, cached model artifacts, and result summaries together, while leaving paper drafts and publishing files outside the repo.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-This repository contains the **code, dataset, scripts, exported metrics, and result figures** needed to inspect and rerun the project.
+Research code repository for channel-aware task offloading and adaptive resource allocation in edge-cloud IoT systems. It includes the runnable code, datasets, cached artifacts, exported metrics, and result figures needed to inspect or rerun the project.
 
 ## Core Idea
 
@@ -39,7 +39,7 @@ docs/                 Dataset, results, and reproducibility notes
 | `cloud_nodes.csv` | 10 | Static cloud node table |
 | `cloud_state.csv` | 10,000 | Cloud node state over 1,000 timesteps |
 
-The dataset is synthetic, not measured telemetry.
+The dataset is synthetic rather than measured deployment telemetry.
 
 Earlier dataset snapshots are kept under `data/old/`:
 
@@ -50,7 +50,7 @@ These are included for project history and comparison against the final Dataset3
 
 ## Main Results
 
-The table below is copied from `results/exports/main_policy_comparison_test_only.csv`. It uses the valid held-out policy-evaluation subset with `N = 9,733`.
+The table below is taken from `results/exports/main_policy_comparison_test_only.csv`. It uses the valid held-out policy-evaluation subset with `N = 9,733`.
 
 | Method | Avg. latency | SLA % | SLA miss % | Rejection % | Edge usage % |
 |---|---:|---:|---:|---:|---:|
@@ -63,7 +63,7 @@ The table below is copied from `results/exports/main_policy_comparison_test_only
 | **Fed-DDQN (Proposed)** | **136.009** | **97.73** | **2.27** | **3.68** | **67.43** |
 | Oracle | 123.310 | 97.99 | 2.01 | 3.43 | 69.27 |
 
-Oracle is a non-trainable latency-reference rule over generated finite edge/cloud alternatives. It is not a deployable policy.
+Oracle is a non-trainable latency-reference rule over the generated edge/cloud alternatives. It is included as a reference, not as a deployable policy.
 
 ## Summary
 
@@ -77,7 +77,7 @@ Oracle is a non-trainable latency-reference rule over generated finite edge/clou
 
 The resource allocator is evaluated after Stage 1 selects edge execution. It assigns normalized CPU, memory, and bandwidth shares under capacity constraints.
 
-The exported results support this high-level readout:
+The exported results support two main takeaways:
 
 - Rejection-Aware Demand has the lowest proxy-target MAE.
 - Residual + Risk Projection has the best efficiency score, lowest under-allocation, and zero capacity violation.
@@ -98,7 +98,7 @@ Open the notebook:
 jupyter lab notebooks/v6.6.ipynb
 ```
 
-The notebook copy resolves the dataset from `data/dataset3` when run from either the repository root or the `notebooks/` folder.
+The notebook resolves the dataset from `data/dataset3` when run from either the repository root or the `notebooks/` folder.
 
 Quick-run caches are included under:
 
@@ -107,9 +107,9 @@ data/dataset3/_v64_cache/
 data/dataset3/_v66_cache/experiment_exports/
 ```
 
-These cache files allow faster inspection and reruns when the notebook configuration matches the included Dataset3 snapshot. Use `results/exports/` to inspect saved output metrics without retraining.
+These cache files support faster inspection and reruns when the notebook configuration matches the included dataset snapshot. Use `results/exports/` to inspect saved metrics without retraining.
 
-Older notebook versions are stored in `notebooks/old/` for development history. The main current experiment entrypoint remains `notebooks/v6.6.ipynb`.
+Older notebook versions are stored in `notebooks/old/` for development history. The main experiment entry point is `notebooks/v6.6.ipynb`.
 
 ## Regenerating Dataset3
 
@@ -129,4 +129,4 @@ Back up the included CSVs before overwriting them if you need to preserve this s
 
 ## License
 
-No open-source license has been assigned yet. Treat this as a personal research-code repository.
+This project is released under the MIT License. See `LICENSE`.

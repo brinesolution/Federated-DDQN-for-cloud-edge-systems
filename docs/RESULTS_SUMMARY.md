@@ -17,26 +17,26 @@ Evaluation subset: valid held-out policy-evaluation rows, `N = 9,733`.
 | Fed-DDQN (Proposed) | 136.009 | 97.73 | 3.68 | 67.43 |
 | Oracle | 123.310 | 97.99 | 3.43 | 69.27 |
 
-## Main Claims Supported By These Exports
+## Main Findings
 
-- Fed-DDQN gives the lowest average latency among the implemented main comparison methods.
+- Fed-DDQN gives the lowest average latency among the main implemented comparison methods.
 - The Fed-DDQN latency is 6.15% lower than centralized DDQN.
 - The Fed-DDQN latency is 1.71% lower than the FL-DDPG-style comparator.
-- The proposed method keeps SLA and rejection behavior close to the latency-reference Oracle while remaining deployable/trainable.
+- The proposed method stays close to the latency-reference Oracle on SLA and rejection while remaining trainable and deployable.
 
 ## Fed-DDQN Ablation Summary
 
-Three-seed ablation exports show that the proposed configuration is a balanced design across latency, SLA, rejection, edge usage, validation score, and rounds run.
+The three-seed ablation exports show that the proposed configuration is a balanced design across latency, SLA, rejection, edge usage, validation score, and training rounds.
 
-The action-aware pressure variant can slightly reduce latency, but the proposed configuration is retained for the balanced validation-selected tradeoff.
+The action-aware pressure variant can reduce latency slightly, but the proposed configuration is retained because it gives the more balanced validation-selected tradeoff.
 
 See `results/exports/fed_ddqn_ablation_summary.csv`.
 
 ## Stage-2 Resource Allocation
 
-Stage 2 is evaluated only for allocator-valid edge-selected tasks. Its role is resource assignment after Stage 1 chooses edge.
+Stage 2 is evaluated only on allocator-valid edge-selected tasks. Its role is resource assignment after Stage 1 chooses edge.
 
-The allocator export summary:
+The allocator exports support the following summary:
 
 - Rejection-Aware Demand has the lowest proxy-target MAE.
 - Residual + Risk Projection has the best efficiency score, lowest under-allocation, and zero capacity violation.

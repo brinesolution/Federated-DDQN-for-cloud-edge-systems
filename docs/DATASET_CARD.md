@@ -10,7 +10,7 @@ Real-world-inspired synthetic dataset. It is not measured deployment telemetry.
 
 ## Purpose
 
-The dataset supports comparison of edge-cloud task offloading and resource allocation methods under bursty workload, network, edge, and cloud stress.
+The dataset supports comparison of edge-cloud task offloading and resource allocation methods under bursty workload, network, edge, and cloud stress conditions.
 
 ## Files
 
@@ -42,10 +42,10 @@ The generator includes:
 
 ## Intended Use
 
-Use this dataset to evaluate relative behavior of edge/cloud offloading policies under a fixed offline benchmark. It is suitable for algorithm comparison, ablation, and result visualization.
+Use this dataset to evaluate the relative behavior of edge/cloud offloading policies under a fixed offline benchmark. It is suitable for algorithm comparison, ablation studies, and result visualization.
 
 ## Limitations
 
 - The benchmark is synthetic.
-- The notebook uses an offline exogenous-transition evaluation sequence: policy actions affect current-task reward and metrics, but do not mutate future CSV queue/state rows.
+- The notebook uses an offline exogenous-transition evaluation sequence: policy actions affect current-task reward and metrics, but they do not mutate future CSV queue or state rows.
 - Closed-loop queue mutation and measured deployment traces remain future extensions.
